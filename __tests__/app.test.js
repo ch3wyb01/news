@@ -54,4 +54,12 @@ describe("GET /api/articles/:article_id", () => {
         expect(body.msg).toBe("Invalid input");
       });
   });
+  test("404: returns not found message when passed valid but non-existent article_id", () => {
+    return request(app)
+      .get("/api/articles/100")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Article not found");
+      });
+  });
 });

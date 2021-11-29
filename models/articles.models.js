@@ -1,7 +1,6 @@
 const db = require("../db/connection");
 
 exports.selectArticleById = async (article_id) => {
-
   const { rows } = await db.query(
     `SELECT articles.*, COUNT(comments.article_id) AS comment_count
     FROM articles
@@ -11,6 +10,14 @@ exports.selectArticleById = async (article_id) => {
     [article_id]
   );
   
-  return rows[0];
-};
+  const article = rows[0];
 
+  if (!article) {
+    await Promise.reject({
+      status: 404,
+      msg: "Article not found",
+    });
+  }
+
+  return article;
+};
