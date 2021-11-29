@@ -41,7 +41,7 @@ describe("GET /api/articles/:article_id", () => {
             topic: "mitch",
             author: "butter_bridge",
             created_at: "2020-07-09T20:11:00.000Z",
-            comment_count: "11",
+            comment_count: 11,
           })
         );
       });
