@@ -38,12 +38,20 @@ describe("GET /api/articles/:article_id", () => {
             title: "Living in the shadow of a great man",
             body: "I find this existence challenging",
             votes: 100,
-            topic: 'mitch',
-            author: 'butter_bridge',
-            created_at: '2020-07-09T20:11:00.000Z',
-            comment_count: '11'
+            topic: "mitch",
+            author: "butter_bridge",
+            created_at: "2020-07-09T20:11:00.000Z",
+            comment_count: "11",
           })
         );
+      });
+  });
+  test("400: returns bad request message when passed invalid article_id", () => {
+    return request(app)
+      .get("/api/articles/beans")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("Invalid input");
       });
   });
 });
