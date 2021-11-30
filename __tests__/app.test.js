@@ -178,4 +178,24 @@ describe("GET /api/articles", () => {
     } = await request(app).get("/api/articles?order=invalid").expect(400);
     expect(msg).toBe("Invalid order query");
   });
+  test("200: returns array filtered by topic passed by topic query", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles?topic=mitch").expect(200);
+    expect(articles).toHaveLength(11);
+    articles.forEach((article) => {
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          topic: "mitch",
+          author: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        })
+      );
+    });
+  });
 });
