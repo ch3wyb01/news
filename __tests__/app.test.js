@@ -90,4 +90,21 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400);
     expect(msg).toBe("Invalid input");
   });
+  test('200: ignores extra keys on body and returns updated article', async () => {
+    const incrementer = { inc_votes: -2, cats: 4 };
+    const { body } = await request(app)
+      .patch("/api/articles/1")
+      .send(incrementer)
+      .expect(200);
+    expect(body.article).toEqual({
+      article_id: 1,
+      title: "Living in the shadow of a great man",
+      body: "I find this existence challenging",
+      votes: 98,
+      topic: "mitch",
+      author: "butter_bridge",
+      created_at: "2020-07-09T20:11:00.000Z",
+      comment_count: 11,
+    });
+  });
 });
