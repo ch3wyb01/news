@@ -198,4 +198,15 @@ describe("GET /api/articles", () => {
       );
     });
   });
+  test("200: returns empty array when passed topic query that has no associated articles", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles?topic=paper").expect(200);
+    expect(Array.isArray(articles)).toBe(true);
+    expect(articles).toHaveLength(0);
+  });
+  test('404: returns error message when passed topic query that does not exist', async () => {
+    const {body : {msg}} = await request(app).get("/api/articles?topic=invalid").expect(404);
+    expect(msg).toBe("Resource not found")
+  });
 });
