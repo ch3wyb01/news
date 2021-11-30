@@ -82,4 +82,12 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400);
     expect(msg).toBe("No votes change inputted");
   });
+  test('400: returns error message if inc_votes is invalid data type', async () => {
+    const incrementer = {inc_votes : "bob"};
+    const { body: { msg } } = await request(app)
+      .patch("/api/articles/2")
+      .send(incrementer)
+      .expect(400);
+    expect(msg).toBe("Invalid input");
+  });
 });
