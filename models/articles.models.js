@@ -23,7 +23,7 @@ exports.selectArticleById = async (article_id) => {
 };
 
 exports.updateArticleById = async (inc_votes, article_id) => {
-  
+
   if (!inc_votes) {
     await Promise.reject({
       status: 400,
@@ -42,3 +42,7 @@ exports.updateArticleById = async (inc_votes, article_id) => {
 
   return article;
 };
+
+exports.selectArticles = async () => {
+
+}
