@@ -28,6 +28,11 @@ exports.patchArticleById = async (req, res, next) => {
 };
 
 exports.getArticles = async (req, res, next) => {
-  const articles = await selectArticles();
-  res.status(200).send({articles});
-}
+  try {
+    const { sort_by } = req.query;
+    const articles = await selectArticles(sort_by);
+    res.status(200).send({ articles });
+  } catch (err) {
+    next(err);
+  }
+};

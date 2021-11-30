@@ -115,7 +115,7 @@ describe("PATCH /api/articles/:article_id", () => {
   });
 });
 
-describe.only("GET /api/articles", () => {
+describe("GET /api/articles", () => {
   test("200: returns array of articles", async () => {
     const {
       body: { articles },
@@ -135,5 +135,23 @@ describe.only("GET /api/articles", () => {
         })
       );
     });
+  });
+  test("200: returns array sorted by created_at descending by default", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles").expect(200);
+    expect(articles).toBeSortedBy("created_at", { descending: true });
+  });
+  test("200: returns array sorted by passed sort_by query with valid column name", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles?sort_by=title").expect(200);
+    expect(articles).toBeSortedBy("title", { descending: true });
+  });
+  test("400: returns error message when passed invalid sort_by query", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles?sort_by=cats").expect(400);
+    expect(msg).toBe("Invalid sort by query");
   });
 });

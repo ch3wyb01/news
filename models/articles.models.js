@@ -23,7 +23,6 @@ exports.selectArticleById = async (article_id) => {
 };
 
 exports.updateArticleById = async (inc_votes, article_id) => {
-
   if (!inc_votes) {
     await Promise.reject({
       status: 400,
@@ -43,13 +42,28 @@ exports.updateArticleById = async (inc_votes, article_id) => {
   return article;
 };
 
-exports.selectArticles = async () => {
+exports.selectArticles = async (sort_by = "created_at") => {
+  if (
+    ![
+      "title",
+      "body",
+      "votes",
+      "topic",
+      "author",
+      "created_at",
+      "comment_count",
+    ].includes(sort_by)
+  ) {
+    return Promise.reject({ status: 400, msg: "Invalid sort by query" });
+  }
+
   const { rows } = await db.query(
     `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
     FROM articles
     LEFT JOIN comments ON articles.article_id = comments.article_id
-    GROUP BY articles.article_id;`
+    GROUP BY articles.article_id
+    ORDER BY ${sort_by} DESC;`
   );
 
   return rows;
-}
+};
