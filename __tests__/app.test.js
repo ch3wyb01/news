@@ -105,10 +105,35 @@ describe("PATCH /api/articles/:article_id", () => {
   });
   test("404: returns path not found message when passed invalid path", async () => {
     const incrementer = { inc_votes: 1 };
-    const { body: { msg } } = await request(app)
+    const {
+      body: { msg },
+    } = await request(app)
       .patch("/api/articlez/1")
       .send(incrementer)
       .expect(404);
     expect(msg).toBe("Path not found");
+  });
+});
+
+describe.only("GET /api/articles", () => {
+  test("200: returns array of articles", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles").expect(200);
+    expect(articles).toHaveLength(12);
+    articles.forEach((article) => {
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        })
+      );
+    });
   });
 });
