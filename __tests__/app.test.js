@@ -147,6 +147,18 @@ describe("GET /api/articles", () => {
       body: { articles },
     } = await request(app).get("/api/articles?sort_by=title").expect(200);
     expect(articles).toBeSortedBy("title", { descending: true });
+    expect(articles[0]).toEqual(
+      expect.objectContaining({
+        article_id: 7,
+        title: "Z",
+        body: expect.any(String),
+        votes: expect.any(Number),
+        topic: expect.any(String),
+        author: expect.any(String),
+        created_at: expect.any(String),
+        comment_count: expect.any(Number),
+      })
+    );
   });
   test("400: returns error message when passed invalid sort_by query", async () => {
     const {
