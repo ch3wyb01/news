@@ -9,9 +9,7 @@ afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
   test("200: returns array of topic objects with slug and description keys", async () => {
-    const { body } = await request(app)
-      .get("/api/topics")
-      .expect(200);
+    const { body } = await request(app).get("/api/topics").expect(200);
     expect(body.topics).toHaveLength(3);
     body.topics.forEach((topic) => {
       expect(topic).toEqual(
@@ -26,9 +24,7 @@ describe("GET /api/topics", () => {
 
 describe("GET /api/articles/:article_id", () => {
   test("200: returns an article object with all relevant keys", async () => {
-    const { body } = await request(app)
-      .get("/api/articles/1")
-      .expect(200);
+    const { body } = await request(app).get("/api/articles/1").expect(200);
     expect(body.article).toEqual(
       expect.objectContaining({
         article_id: 1,
@@ -43,15 +39,11 @@ describe("GET /api/articles/:article_id", () => {
     );
   });
   test("400: returns bad request message when passed invalid article_id", async () => {
-    const { body } = await request(app)
-      .get("/api/articles/beans")
-      .expect(400);
+    const { body } = await request(app).get("/api/articles/beans").expect(400);
     expect(body.msg).toBe("Invalid input");
   });
   test("404: returns not found message when passed valid but non-existent article_id", async () => {
-    const { body } = await request(app)
-      .get("/api/articles/100")
-      .expect(404);
+    const { body } = await request(app).get("/api/articles/100").expect(404);
     expect(body.msg).toBe("Article not found");
   });
 });
@@ -76,21 +68,25 @@ describe("PATCH /api/articles/:article_id", () => {
   });
   test("400: returns error message if no inc_votes included in body", async () => {
     const incrementer = {};
-    const { body: { msg } } = await request(app)
+    const {
+      body: { msg },
+    } = await request(app)
       .patch("/api/articles/2")
       .send(incrementer)
       .expect(400);
     expect(msg).toBe("No votes change inputted");
   });
-  test('400: returns error message if inc_votes is invalid data type', async () => {
-    const incrementer = {inc_votes : "bob"};
-    const { body: { msg } } = await request(app)
+  test("400: returns error message if inc_votes is invalid data type", async () => {
+    const incrementer = { inc_votes: "bob" };
+    const {
+      body: { msg },
+    } = await request(app)
       .patch("/api/articles/2")
       .send(incrementer)
       .expect(400);
     expect(msg).toBe("Invalid input");
   });
-  test('200: ignores extra keys on body and returns updated article', async () => {
+  test("200: ignores extra keys on body and returns updated article", async () => {
     const incrementer = { inc_votes: -2, cats: 4 };
     const { body } = await request(app)
       .patch("/api/articles/1")
@@ -106,5 +102,13 @@ describe("PATCH /api/articles/:article_id", () => {
       created_at: "2020-07-09T20:11:00.000Z",
       comment_count: 11,
     });
+  });
+  test("404: returns path not found message when passed invalid path", async () => {
+    const incrementer = { inc_votes: 1 };
+    const { body: { msg } } = await request(app)
+      .patch("/api/articlez/1")
+      .send(incrementer)
+      .expect(404);
+    expect(msg).toBe("Path not found");
   });
 });
