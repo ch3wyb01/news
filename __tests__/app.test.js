@@ -63,3 +63,25 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe('PATCH /api/articles/:article_id', () => {
+  test.only('200: returns article with updated votes', () => {
+    const incrementer = {inc_votes : 2};
+    return request(app)
+    .patch('/api/articles/1')
+    .send(incrementer)
+    .expect(200)
+    .then(({body}) => {
+      expect(body.article).toEqual({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        body: "I find this existence challenging",
+        votes: 102,
+        topic: "mitch",
+        author: "butter_bridge",
+        created_at: "2020-07-09T20:11:00.000Z",
+        comment_count: 11,
+      })
+    })
+  });
+});

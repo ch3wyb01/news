@@ -21,3 +21,17 @@ exports.selectArticleById = async (article_id) => {
 
   return article;
 };
+
+exports.updateArticleById = async (inc_votes, article_id) => {
+  await db.query(
+    `UPDATE articles
+  SET votes = votes + $1
+  WHERE article_id = $2
+  RETURNING *;`,
+    [inc_votes, article_id]
+  );
+
+  const article = await this.selectArticleById(article_id);
+
+  return article;
+};
