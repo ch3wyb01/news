@@ -166,4 +166,16 @@ describe("GET /api/articles", () => {
     } = await request(app).get("/api/articles?sort_by=cats").expect(400);
     expect(msg).toBe("Invalid sort by query");
   });
+  test("200: returns array ordered by ascending when passed order_by query of asc", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles?order=asc").expect(200);
+    expect(articles).toBeSortedBy("created_at");
+  });
+  test("400: returns error message when passed invalid order query", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles?order=invalid").expect(400);
+    expect(msg).toBe("Invalid order query");
+  });
 });
