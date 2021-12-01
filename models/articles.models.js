@@ -5,7 +5,7 @@ exports.selectArticleById = async (article_id) => {
   const { rows } = await db.query(
     `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
     FROM articles
-    JOIN comments ON articles.article_id = comments.article_id
+    LEFT JOIN comments ON articles.article_id = comments.article_id
     WHERE articles.article_id = $1
     GROUP BY articles.article_id;`,
     [article_id]
