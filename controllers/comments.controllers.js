@@ -1,4 +1,4 @@
-const { selectCommentsByArticleId } = require("../models/comments.models");
+const { selectCommentsByArticleId, insertCommentByArticleId } = require("../models/comments.models");
 const { checkExists } = require("../utils");
 
 exports.getCommentsByArticleId = async (req, res, next) => {
@@ -14,3 +14,11 @@ exports.getCommentsByArticleId = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.postCommentByArticleId = async (req, res, next) => {
+  const {username, body} = req.body;
+  const {article_id} = req.params;
+  const comment = await insertCommentByArticleId(username, article_id, body);
+
+  res.status(201).send({comment});
+}
