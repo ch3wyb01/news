@@ -38,6 +38,21 @@ describe("GET /api/articles/:article_id", () => {
       })
     );
   });
+  test("200: returns an article object when article has no associated comments", async () => {
+    const { body } = await request(app).get("/api/articles/2").expect(200);
+    expect(body.article).toEqual(
+      expect.objectContaining({
+        article_id: 2,
+        title: 'Sony Vaio; or, The Laptop',
+        body: expect.any(String),
+        votes: 0,
+        topic: "mitch",
+        author: 'icellusedkars',
+        created_at: expect.any(String),
+        comment_count: 0,
+      })
+    );
+  });
   test("400: returns bad request message when passed invalid article_id", async () => {
     const { body } = await request(app).get("/api/articles/beans").expect(400);
     expect(body.msg).toBe("Invalid input");
