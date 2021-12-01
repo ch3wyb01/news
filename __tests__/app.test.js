@@ -296,4 +296,17 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404);
     expect(msg).toBe("Resource not found");
   });
+  test("400: returns error message if passed invalid article ID", async () => {
+    const newComment = {
+      username: "lurker",
+      body: "Cats are better than dogs",
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/articles/invalid/comments")
+      .send(newComment)
+      .expect(400);
+    expect(msg).toBe("Invalid article ID");
+  });
 });
