@@ -229,7 +229,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
-  test("200: responds with array of comments for the given article_id with the relevant keys", async () => {
+  test.only("200: responds with array of comments for the given article_id with the relevant keys", async () => {
     const {
       body: { comments },
     } = await request(app).get("/api/articles/5/comments").expect(200);
@@ -237,7 +237,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     comments.forEach((comment) => {
       expect(comment).toEqual(
         expect.objectContaining({
-          comment_id: expect.any(NUmber),
+          comment_id: expect.any(Number),
           votes: expect.any(Number),
           created_at: expect.any(String),
           author: expect.any(String),
