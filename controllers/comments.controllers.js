@@ -24,6 +24,11 @@ exports.postCommentByArticleId = async (req, res, next) => {
   try {
     const { username, body } = req.body;
     const { article_id } = req.params;
+
+    if (isNaN(article_id)) {
+      await Promise.reject({ status: 400, msg: "Invalid article ID" });
+    }
+    
     await checkExists("articles", "article_id", article_id);
 
     const comment = await insertCommentByArticleId(username, article_id, body);
