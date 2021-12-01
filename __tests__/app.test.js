@@ -128,6 +128,16 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(404);
     expect(msg).toBe("Path not found");
   });
+  test("400: returns error message when passed invalid article ID", async () => {
+    const incrementer = { inc_votes: 1 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .patch("/api/articles/invalid")
+      .send(incrementer)
+      .expect(400);
+    expect(msg).toBe("Invalid article ID");
+  });
 });
 
 describe("GET /api/articles", () => {

@@ -25,6 +25,10 @@ exports.patchArticleById = async (req, res, next) => {
     const { inc_votes } = req.body;
     const { article_id } = req.params;
 
+    if (isNaN(article_id)) {
+      await Promise.reject({ status: 400, msg: "Invalid article ID" });
+    }
+
     const article = await updateArticleById(inc_votes, article_id);
 
     res.status(200).send({ article });
