@@ -283,4 +283,17 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
     );
   });
+  test("404: returns error message if passed non-existent article ID", async () => {
+    const newComment = {
+      username: "lurker",
+      body: "Cats are better than dogs",
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/articles/60/comments")
+      .send(newComment)
+      .expect(404);
+    expect(msg).toBe("Resource not found");
+  });
 });
