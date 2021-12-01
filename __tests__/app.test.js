@@ -224,7 +224,7 @@ describe("GET /api/articles", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/articles?topic=invalid").expect(404);
-    expect(msg).toBe("Resource not found");
+    expect(msg).toBe("Resource not found in topics");
   });
 });
 
@@ -250,7 +250,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/articles/100/comments").expect(404);
-    expect(msg).toBe("Resource not found");
+    expect(msg).toBe("Resource not found in articles");
   });
   test("400: returns error message if passed invalid article_id", async () => {
     const {
@@ -294,7 +294,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .post("/api/articles/60/comments")
       .send(newComment)
       .expect(404);
-    expect(msg).toBe("Resource not found");
+    expect(msg).toBe("Resource not found in articles");
   });
   test("400: returns error message if passed invalid article ID", async () => {
     const newComment = {
