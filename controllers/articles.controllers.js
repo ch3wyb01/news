@@ -3,6 +3,7 @@ const {
   updateArticleById,
   selectArticles,
 } = require("../models/articles.models");
+const { checkExists } = require("../utils");
 
 exports.getArticleById = async (req, res, next) => {
   try {
@@ -30,6 +31,11 @@ exports.patchArticleById = async (req, res, next) => {
 exports.getArticles = async (req, res, next) => {
   try {
     const { sort_by, order, topic } = req.query;
+
+    if (topic) {
+    await checkExists("topics", "slug", topic);
+    }
+    
     const articles = await selectArticles(sort_by, order, topic);
     res.status(200).send({ articles });
   } catch (err) {
