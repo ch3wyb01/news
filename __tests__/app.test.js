@@ -296,6 +296,19 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404);
     expect(msg).toBe("Resource not found in articles");
   });
+  test('404: returns error message if passed non-existent username', async () => {
+    const newComment = {
+      username: "banana",
+      body: "Cats are better than dogs",
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(404);
+    expect(msg).toBe("Resource not found in users");
+  });
   test("400: returns error message if passed invalid article ID", async () => {
     const newComment = {
       username: "lurker",
