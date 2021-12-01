@@ -13,24 +13,11 @@ exports.selectArticleById = async (article_id) => {
 
   const article = rows[0];
 
-  if (!article) {
-    await Promise.reject({
-      status: 404,
-      msg: "Article not found",
-    });
-  }
-
   return article;
 };
 
 exports.updateArticleById = async (inc_votes, article_id) => {
-  if (!inc_votes) {
-    await Promise.reject({
-      status: 400,
-      msg: "No votes change inputted",
-    });
-  }
-
+  
   await db.query(
     `UPDATE articles
   SET votes = votes + $1

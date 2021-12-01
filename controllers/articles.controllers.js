@@ -14,6 +14,14 @@ exports.getArticleById = async (req, res, next) => {
     }
     
     const article = await selectArticleById(article_id);
+
+    if (!article) {
+      await Promise.reject({
+        status: 404,
+        msg: "Article not found",
+      });
+    }
+
     res.status(200).send({ article });
   } catch (err) {
     next(err);
@@ -22,11 +30,18 @@ exports.getArticleById = async (req, res, next) => {
 
 exports.patchArticleById = async (req, res, next) => {
   try {
-    const { inc_votes } = req.body;
     const { article_id } = req.params;
+    const { inc_votes } = req.body;
 
     if (isNaN(article_id)) {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
+    }
+
+    if (!inc_votes) {
+      await Promise.reject({
+        status: 400,
+        msg: "No votes change inputted",
+      });
     }
 
     const article = await updateArticleById(inc_votes, article_id);
@@ -46,6 +61,7 @@ exports.getArticles = async (req, res, next) => {
     }
     
     const articles = await selectArticles(sort_by, order, topic);
+
     res.status(200).send({ articles });
   } catch (err) {
     next(err);
