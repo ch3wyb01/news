@@ -228,8 +228,8 @@ describe("GET /api/articles", () => {
   });
 });
 
-describe("GET /api/articles/:article_id/comments", () => {
-  test.only("200: responds with array of comments for the given article_id with the relevant keys", async () => {
+describe.only("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with array of comments for the given article_id with the relevant keys", async () => {
     const {
       body: { comments },
     } = await request(app).get("/api/articles/5/comments").expect(200);
@@ -245,5 +245,9 @@ describe("GET /api/articles/:article_id/comments", () => {
         })
       );
     });
+  });
+  test('404: returns error message if passed non-existent article_id', async () => {
+    const {body : {msg}} = await request(app).get("/api/articles/100/comments").expect(404);
+    expect(msg).toBe("Resource not found");
   });
 });
