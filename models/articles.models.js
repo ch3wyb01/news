@@ -73,7 +73,6 @@ exports.selectArticles = async (
   LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
   if (topic) {
-    await checkExists("topics", "slug", topic);
     queryValues.push(topic);
     queryStr += ` WHERE topic = $1`;
   }
