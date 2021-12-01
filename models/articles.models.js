@@ -1,4 +1,5 @@
 const db = require("../db/connection");
+const { checkExists } = require("../utils");
 
 exports.selectArticleById = async (article_id) => {
   const { rows } = await db.query(
@@ -66,12 +67,13 @@ exports.selectArticles = async (
   }
 
   const queryValues = [];
-  
+
   let queryStr = `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id`;
 
   if (topic) {
+    await checkExists("topics", "slug", topic);
     queryValues.push(topic);
     queryStr += ` WHERE topic = $1`;
   }
