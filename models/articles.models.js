@@ -66,21 +66,16 @@ exports.selectArticles = async (
     await Promise.reject({ status: 400, msg: "Invalid order query" });
   }
 
-  const queryValues = [];
 
-  let queryStr = `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
+  const queryStr = `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
   FROM articles
-  LEFT JOIN comments ON articles.article_id = comments.article_id`;
-
-  if (topic) {
-    queryValues.push(topic);
-    queryStr += ` WHERE topic = $1`;
-  }
-
-  queryStr += ` GROUP BY articles.article_id
+  LEFT JOIN comments ON articles.article_id = comments.article_id
+  ${topic ? ' WHERE topic = $1' : ''}
+  GROUP BY articles.article_id
   ORDER BY ${sort_by} ${order};`;
 
-  const { rows } = await db.query(queryStr, queryValues);
+  
+  const { rows } = await db.query(queryStr, topic ? [topic] : []);
 
   return rows;
 };
