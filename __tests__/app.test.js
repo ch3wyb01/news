@@ -43,11 +43,11 @@ describe("GET /api/articles/:article_id", () => {
     expect(body.article).toEqual(
       expect.objectContaining({
         article_id: 2,
-        title: 'Sony Vaio; or, The Laptop',
+        title: "Sony Vaio; or, The Laptop",
         body: expect.any(String),
         votes: 0,
         topic: "mitch",
-        author: 'icellusedkars',
+        author: "icellusedkars",
         created_at: expect.any(String),
         comment_count: 0,
       })
@@ -220,8 +220,30 @@ describe("GET /api/articles", () => {
     expect(Array.isArray(articles)).toBe(true);
     expect(articles).toHaveLength(0);
   });
-  test('404: returns error message when passed topic query that does not exist', async () => {
-    const {body : {msg}} = await request(app).get("/api/articles?topic=invalid").expect(404);
-    expect(msg).toBe("Resource not found")
+  test("404: returns error message when passed topic query that does not exist", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles?topic=invalid").expect(404);
+    expect(msg).toBe("Resource not found");
+  });
+});
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: responds with array of comments for the given article_id with the relevant keys", async () => {
+    const {
+      body: { comments },
+    } = await request(app).get("/api/articles/5/comments").expect(200);
+    expect(comments).toHaveLength(2);
+    comments.forEach((comment) => {
+      expect(comment).toEqual(
+        expect.objectContaining({
+          comment_id: expect.any(NUmber),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+        })
+      );
+    });
   });
 });
