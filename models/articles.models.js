@@ -1,5 +1,4 @@
 const db = require("../db/connection");
-const { checkExists } = require("../utils");
 
 exports.selectArticleById = async (article_id) => {
   const { rows } = await db.query(
