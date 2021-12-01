@@ -246,12 +246,41 @@ describe("GET /api/articles/:article_id/comments", () => {
       );
     });
   });
-  test('404: returns error message if passed non-existent article_id', async () => {
-    const {body : {msg}} = await request(app).get("/api/articles/100/comments").expect(404);
+  test("404: returns error message if passed non-existent article_id", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles/100/comments").expect(404);
     expect(msg).toBe("Resource not found");
   });
-  test('400: returns error message if passed invalid article_id', async () => {
-    const {body : {msg}} = await request(app).get("/api/articles/invalid/comments").expect(400);
+  test("400: returns error message if passed invalid article_id", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles/invalid/comments").expect(400);
     expect(msg).toBe("Invalid article ID");
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: responds with new comment", async () => {
+    const newComment = {
+      username: "lurker",
+      body: "Cats are better than dogs",
+    };
+    const {
+      body: { comment },
+    } = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201);
+    expect(comment).toEqual(
+      expect.objectContaining({
+        comment_id: 19,
+        author: "lurker",
+        article_id: 1,
+        votes: 0,
+        created_at: expect.any(String),
+        body: "Cats are better than dogs",
+      })
+    );
   });
 });
