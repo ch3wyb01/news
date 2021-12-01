@@ -55,7 +55,7 @@ describe("GET /api/articles/:article_id", () => {
   });
   test("400: returns bad request message when passed invalid article_id", async () => {
     const { body } = await request(app).get("/api/articles/beans").expect(400);
-    expect(body.msg).toBe("Invalid input");
+    expect(body.msg).toBe("Invalid article ID");
   });
   test("404: returns not found message when passed valid but non-existent article_id", async () => {
     const { body } = await request(app).get("/api/articles/100").expect(404);
