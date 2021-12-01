@@ -1,6 +1,10 @@
 const db = require("../db/connection");
 
 exports.selectArticleById = async (article_id) => {
+  if (isNaN(article_id)) {
+    return Promise.reject({ status: 400, msg: "Invalid article ID" });
+  }
+  
   const { rows } = await db.query(
     `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
     FROM articles
