@@ -7,6 +7,7 @@ const { checkExists } = require("../utils");
 exports.getCommentsByArticleId = async (req, res, next) => {
   try {
     const { article_id } = req.params;
+    
     if (isNaN(article_id)) {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
     }
@@ -28,8 +29,11 @@ exports.postCommentByArticleId = async (req, res, next) => {
     if (isNaN(article_id)) {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
     }
-    
-    await checkExists("articles", "article_id", article_id);
+
+    await Promise.all([
+      checkExists("articles", "article_id", article_id),
+      checkExists("users", "username", username),
+    ]);
 
     const comment = await insertCommentByArticleId(username, article_id, body);
 
