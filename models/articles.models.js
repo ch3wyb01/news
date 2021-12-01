@@ -59,11 +59,11 @@ exports.selectArticles = async (
       "comment_count",
     ].includes(sort_by)
   ) {
-    return Promise.reject({ status: 400, msg: "Invalid sort by query" });
+    await Promise.reject({ status: 400, msg: "Invalid sort by query" });
   }
 
   if (!["asc", "desc"].includes(order)) {
-    return Promise.reject({ status: 400, msg: "Invalid order query" });
+    await Promise.reject({ status: 400, msg: "Invalid order query" });
   }
 
   const queryValues = [];
