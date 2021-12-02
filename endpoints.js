@@ -111,4 +111,16 @@ exports.endpointsDescription = {
     queries: [],
     exampleResponse: {},
   },
+  "GET /api/users": {
+    description: "serves an array of all users' usernames",
+    queries: [],
+    exampleResponse: {
+      users: [
+        { username: "butter_bridge" },
+        { username: "icellusedkars" },
+        { username: "rogersop" },
+        { username: "lurker" },
+      ],
+    },
+  },
 };
