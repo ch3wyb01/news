@@ -21,4 +21,4 @@ These files will ensure you are connected to the correct database depending on t
 ## Step 3 - seeding the databases
 To seed the local database, first run the command `npm run setup-dbs` to create the database and `npm run seed` to populate it with the development data.
 
-The test database will be seeded upon running the test file with the command `npm t`
+The test database will be seeded with the test data upon running the test file with the command `npm t`
