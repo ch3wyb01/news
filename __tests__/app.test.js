@@ -332,4 +332,28 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(400);
     expect(msg).toBe("Invalid article ID");
   });
+  test("400: returns error message if passed object missing username key", async () => {
+    const newComment = {
+      body: "Cats are better than dogs",
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400);
+    expect(msg).toBe("Missing username or body");
+  });
+  test("400: returns error message if passed object missing body key", async () => {
+    const newComment = {
+      username: "lurker",
+    };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(400);
+    expect(msg).toBe("Missing username or body");
+  });
 });
