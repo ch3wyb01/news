@@ -12,7 +12,9 @@ Use the command `npm i` to install all dependencies.
 
 ## Step 2 - connecting to the correct database
 Create a `.env.test` file and add `PGDATABASE=nc_news_test`
+
 Create a `.env.development` file and add `PGDATABASE=nc_news`
+
 These files will ensure you are connected to the correct database depending on the environment.
 
 ## Step 3 - seeding the databases
