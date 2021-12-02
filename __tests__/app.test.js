@@ -403,3 +403,16 @@ describe("GET /api/users", () => {
     });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("200: returns user object with username, avatar_url, name properties", async () => {
+    const {
+      body: { user },
+    } = await request(app).get("/api/users/rogersop").expect(200);
+    expect(user).toEqual({
+      username: "rogersop",
+      name: "paul",
+      avatar_url: "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
+    });
+  });
+});
