@@ -3,6 +3,7 @@ const testData = require("../db/data/test-data/index.js");
 const seed = require("../db/seeds/seed.js");
 const request = require("supertest");
 const app = require("../app");
+const { endpointsDescription } = require("../endpoints.js");
 
 beforeEach(() => seed(testData));
 afterAll(() => db.end());
@@ -371,5 +372,12 @@ describe("DELETE /api/comments/:comment_id", () => {
   test('400: returns error message when passed invalid comment ID', async () => {
     const {body : {msg}} = await request(app).delete("/api/comments/invalid").expect(400);
     expect(msg).toBe("Invalid comment ID");
+  });
+});
+
+describe('GET /api', () => {
+  test('200: returns JSON object describing all endpoints', async () => {
+    const {body: {endpoints}}= await request(app).get('/api').expect(200);
+    expect(endpoints).toEqual(endpointsDescription);
   });
 });
