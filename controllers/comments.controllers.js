@@ -49,8 +49,18 @@ exports.postCommentByArticleId = async (req, res, next) => {
 };
 
 exports.deleteCommentById = async (req, res, next) => {
-  const { comment_id } = req.params;
+  try {
+    const { comment_id } = req.params;
 
-  await removeCommentById(comment_id);
-  res.sendStatus(204);
+    if (isNaN(comment_id)) {
+      await Promise.reject({ status: 400, msg: "Invalid comment ID" });
+    }
+
+    await checkExists("comments", "comment_id", comment_id);
+
+    await removeCommentById(comment_id);
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
 };

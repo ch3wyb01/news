@@ -364,4 +364,12 @@ describe("DELETE /api/comments/:comment_id", () => {
     const {rows} = await db.query(`SELECT * FROM comments;`);
     expect(rows).toHaveLength(17);
   });
+  test('404: returns error message when passed non-existent comment ID', async () => {
+    const {body : {msg}} = await request(app).delete("/api/comments/44").expect(404);
+    expect(msg).toBe("Resource not found in comments");
+  });
+  test('400: returns error message when passed invalid comment ID', async () => {
+    const {body : {msg}} = await request(app).delete("/api/comments/invalid").expect(400);
+    expect(msg).toBe("Invalid comment ID");
+  });
 });
