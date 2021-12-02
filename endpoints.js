@@ -112,4 +112,3 @@ exports.endpointsDescription = {
     exampleResponse: {},
   },
 };
-console.log(new Date(1527695953341));
