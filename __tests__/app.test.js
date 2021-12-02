@@ -361,5 +361,7 @@ describe("POST /api/articles/:article_id/comments", () => {
 describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes comment by given ID and responds with no content", async () => {
     await request(app).delete("/api/comments/1").expect(204);
+    const {rows} = await db.query(`SELECT * FROM comments;`);
+    expect(rows).toHaveLength(17);
   });
 });
