@@ -362,22 +362,28 @@ describe("POST /api/articles/:article_id/comments", () => {
 describe("DELETE /api/comments/:comment_id", () => {
   test("204: deletes comment by given ID and responds with no content", async () => {
     await request(app).delete("/api/comments/1").expect(204);
-    const {rows} = await db.query(`SELECT * FROM comments;`);
+    const { rows } = await db.query(`SELECT * FROM comments;`);
     expect(rows).toHaveLength(17);
   });
-  test('404: returns error message when passed non-existent comment ID', async () => {
-    const {body : {msg}} = await request(app).delete("/api/comments/44").expect(404);
+  test("404: returns error message when passed non-existent comment ID", async () => {
+    const {
+      body: { msg },
+    } = await request(app).delete("/api/comments/44").expect(404);
     expect(msg).toBe("Resource not found in comments");
   });
-  test('400: returns error message when passed invalid comment ID', async () => {
-    const {body : {msg}} = await request(app).delete("/api/comments/invalid").expect(400);
+  test("400: returns error message when passed invalid comment ID", async () => {
+    const {
+      body: { msg },
+    } = await request(app).delete("/api/comments/invalid").expect(400);
     expect(msg).toBe("Invalid comment ID");
   });
 });
 
-describe('GET /api', () => {
-  test('200: returns JSON object describing all endpoints', async () => {
-    const {body: {endpoints}}= await request(app).get('/api').expect(200);
+describe("GET /api", () => {
+  test("200: returns JSON object describing all endpoints", async () => {
+    const {
+      body: { endpoints },
+    } = await request(app).get("/api").expect(200);
     expect(endpoints).toEqual(endpointsDescription);
   });
 });
