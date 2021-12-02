@@ -8,6 +8,7 @@
 
 ## Step 1 - initial set-up
 Clone this repo by using this command `git clone https://github.com/ch3wyb01/be-nc-news.git` in your terminal.
+
 Use the command `npm i` to install all dependencies.
 
 ## Step 2 - connecting to the correct database
