@@ -387,3 +387,19 @@ describe("GET /api", () => {
     expect(endpoints).toEqual(endpointsDescription);
   });
 });
+
+describe("GET /api/users", () => {
+  test("200: returns array of users containing their username", async () => {
+    const {
+      body: { users },
+    } = await request(app).get("/api/users").expect(200);
+    expect(users).toHaveLength(4);
+    users.forEach((user) => {
+      expect(user).toEqual(
+        expect.objectContaining({
+          username: expect.any(String),
+        })
+      );
+    });
+  });
+});
