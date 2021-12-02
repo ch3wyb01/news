@@ -20,7 +20,7 @@ exports.endpointsDescription = {
           topic: "cooking",
           author: "weegembump",
           body: "Text from the article...",
-          created_at: 1527695953341,
+          created_at: "2018-05-30T15:59:13.341Z",
         },
       ],
     },
@@ -112,3 +112,4 @@ exports.endpointsDescription = {
     exampleResponse: {},
   },
 };
+console.log(new Date(1527695953341));
