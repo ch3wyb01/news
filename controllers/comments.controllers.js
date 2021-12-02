@@ -1,13 +1,14 @@
 const {
   selectCommentsByArticleId,
   insertCommentByArticleId,
+  removeCommentById,
 } = require("../models/comments.models");
 const { checkExists } = require("../utils");
 
 exports.getCommentsByArticleId = async (req, res, next) => {
   try {
     const { article_id } = req.params;
-    
+
     if (isNaN(article_id)) {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
     }
@@ -26,7 +27,7 @@ exports.postCommentByArticleId = async (req, res, next) => {
     const { username, body } = req.body;
     const { article_id } = req.params;
 
-    if(!username || !body) {
+    if (!username || !body) {
       await Promise.reject({ status: 400, msg: "Missing username or body" });
     }
 
@@ -45,4 +46,11 @@ exports.postCommentByArticleId = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+exports.deleteCommentById = async (req, res, next) => {
+  const { comment_id } = req.params;
+
+  await removeCommentById(comment_id);
+  res.sendStatus(204);
 };
