@@ -26,6 +26,10 @@ exports.postCommentByArticleId = async (req, res, next) => {
     const { username, body } = req.body;
     const { article_id } = req.params;
 
+    if(!username || !body) {
+      await Promise.reject({ status: 400, msg: "Missing username or body" });
+    }
+
     if (isNaN(article_id)) {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
     }
