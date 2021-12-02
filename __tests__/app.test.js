@@ -306,7 +306,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404);
     expect(msg).toBe("Resource not found in articles");
   });
-  test('404: returns error message if passed non-existent username', async () => {
+  test("404: returns error message if passed non-existent username", async () => {
     const newComment = {
       username: "banana",
       body: "Cats are better than dogs",
@@ -355,5 +355,11 @@ describe("POST /api/articles/:article_id/comments", () => {
       .send(newComment)
       .expect(400);
     expect(msg).toBe("Missing username or body");
+  });
+});
+
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: deletes comment by given ID and responds with no content", async () => {
+    await request(app).delete("/api/comments/1").expect(204);
   });
 });
