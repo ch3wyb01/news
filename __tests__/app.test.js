@@ -333,6 +333,29 @@ describe("POST /api/articles/:article_id/comments", () => {
       })
     );
   });
+  test("201: responds with new comment and ignores extra properties in request body", async () => {
+    const newComment = {
+      username: "lurker",
+      body: "Cats are better than dogs",
+      cheese: "edam"
+    };
+    const {
+      body: { comment },
+    } = await request(app)
+      .post("/api/articles/1/comments")
+      .send(newComment)
+      .expect(201);
+    expect(comment).toEqual(
+      {
+        comment_id: 19,
+        author: "lurker",
+        article_id: 1,
+        votes: 0,
+        created_at: expect.any(String),
+        body: "Cats are better than dogs",
+      }
+    );
+  });
   test("404: returns error message if passed non-existent article ID", async () => {
     const newComment = {
       username: "lurker",
