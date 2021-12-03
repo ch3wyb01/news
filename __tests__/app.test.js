@@ -452,7 +452,7 @@ describe("GET /api/users/:username", () => {
   });
 });
 
-describe("PATCH /api/comments/:comment_id", () => {
+describe.only("PATCH /api/comments/:comment_id", () => {
   test("200: returns comment with updated votes", async () => {
     const incrementer = { inc_votes: 3 };
     const {
@@ -481,5 +481,35 @@ describe("PATCH /api/comments/:comment_id", () => {
       .send(incrementer)
       .expect(400);
     expect(msg).toBe("Invalid comment ID");
+  });
+  test("404: returns error message when passed non-existent comment ID", async () => {
+    const incrementer = { inc_votes: 2 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .patch("/api/comments/68")
+      .send(incrementer)
+      .expect(404);
+    expect(msg).toBe("Resource not found in comments");
+  });
+  test("400: returns error message when passed object with no inc_votes property", async () => {
+    const incrementer = {};
+    const {
+      body: { msg },
+    } = await request(app)
+      .patch("/api/comments/2")
+      .send(incrementer)
+      .expect(400);
+    expect(msg).toBe("No votes change inputted");
+  });
+  test("400: returns error message when passed invalid data type for inc_votes property", async () => {
+    const incrementer = {inc_votes : "invalid"};
+    const {
+      body: { msg },
+    } = await request(app)
+      .patch("/api/comments/2")
+      .send(incrementer)
+      .expect(400);
+    expect(msg).toBe("Invalid input");
   });
 });
