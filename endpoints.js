@@ -28,6 +28,7 @@ exports.endpointsDescription = {
   "GET /api/articles/:article_id": {
     description: "serves an object of an article with the given ID",
     queries: [],
+    exampleRequest: "/api/articles/1",
     exampleResponse: {
       article: {
         article_id: 1,
@@ -45,7 +46,8 @@ exports.endpointsDescription = {
     description:
       "accepts an object in the form {inc_votes : newVotes} where newVotes indicates how much the votes property in the given article should be updated by and responds with the updated article",
     queries: [],
-    exampleRequest: {
+    exampleRequest: "/api/articles/1",
+    exampleRequestBody: {
       inc_votes: 2,
     },
     exampleResponse: {
@@ -65,6 +67,7 @@ exports.endpointsDescription = {
     description:
       "serves an array of all comments associated with the given article ID",
     queries: [],
+    exampleRequest: "/api/articles/5/comments",
     exampleResponse: {
       comments: [
         {
@@ -90,7 +93,8 @@ exports.endpointsDescription = {
     description:
       "accepts an object with username and body properties that post a comment and associate it with the given article ID, then responds with the posted comment",
     queries: [],
-    exampleRequest: {
+    exampleRequest: "/api/articles/3/comments",
+    exampleRequestBody: {
       username: "validUsername",
       body: "Comment on the article",
     },
@@ -109,6 +113,7 @@ exports.endpointsDescription = {
     description:
       "Deletes comment with the given comment ID and responds with no content",
     queries: [],
+    exampleRequest: "/api/comments/2",
     exampleResponse: {},
   },
   "GET /api/users": {
@@ -121,6 +126,16 @@ exports.endpointsDescription = {
         { username: "rogersop" },
         { username: "lurker" },
       ],
+    },
+  },
+  "GET /api/users/:username": {
+    description: "serves an object of a user with the given username",
+    queries: [],
+    exampleRequest: "/api/users/coder123",
+    exampleResponse: {
+      username: "coder123",
+      name: "Cody",
+      avatar_url: "https://avatar.url",
     },
   },
 };
