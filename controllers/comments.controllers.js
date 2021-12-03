@@ -2,6 +2,7 @@ const {
   selectCommentsByArticleId,
   insertCommentByArticleId,
   removeCommentById,
+  updateCommentById,
 } = require("../models/comments.models");
 const { checkExists } = require("../utils");
 
@@ -60,6 +61,23 @@ exports.deleteCommentById = async (req, res, next) => {
 
     await removeCommentById(comment_id);
     res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.patchCommentById = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+
+    if (isNaN(comment_id)) {
+      await Promise.reject({ status: 400, msg: "Invalid comment ID" });
+    }
+
+    const comment = await updateCommentById(inc_votes, comment_id);
+
+    res.status(200).send({ comment });
   } catch (err) {
     next(err);
   }
