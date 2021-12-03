@@ -417,7 +417,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("GET /api/users/:username", () => {
+describe.only("GET /api/users/:username", () => {
   test("200: returns user object with username, avatar_url, name properties", async () => {
     const {
       body: { user },
@@ -427,5 +427,17 @@ describe("GET /api/users/:username", () => {
       name: "paul",
       avatar_url: "https://avatars2.githubusercontent.com/u/24394918?s=400&v=4",
     });
+  });
+  test("400: returns error message when passed invalid username", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/users/54").expect(400);
+    expect(msg).toBe("Invalid username");
+  });
+  test("404: returns error message when passed non-existent username", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/users/nonexistent").expect(404);
+    expect(msg).toBe("Resource not found in users");
   });
 });

@@ -1,4 +1,5 @@
 const { selectUsers, selectUserByUsername } = require("../models/users.models");
+const { checkExists } = require("../utils");
 
 exports.getUsers = async (req, res, next) => {
   try {
@@ -11,8 +12,19 @@ exports.getUsers = async (req, res, next) => {
 };
 
 exports.getUserByUsername = async (req, res, next) => {
-  const { username } = req.params;
-  const user = await selectUserByUsername(username);
+  try {
+    const { username } = req.params;
 
-  res.status(200).send({ user });
+    if (!isNaN(username)) {
+      await Promise.reject({ status: 400, msg: "Invalid username" });
+    }
+
+    await checkExists("users", "username", username);
+
+    const user = await selectUserByUsername(username);
+
+    res.status(200).send({ user });
+  } catch (err) {
+    next(err);
+  }
 };
