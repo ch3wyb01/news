@@ -10,9 +10,11 @@ afterAll(() => db.end());
 
 describe("GET /api/topics", () => {
   test("200: returns array of topic objects with slug and description keys", async () => {
-    const { body } = await request(app).get("/api/topics").expect(200);
-    expect(body.topics).toHaveLength(3);
-    body.topics.forEach((topic) => {
+    const {
+      body: { topics },
+    } = await request(app).get("/api/topics").expect(200);
+    expect(topics).toHaveLength(3);
+    topics.forEach((topic) => {
       expect(topic).toEqual(
         expect.objectContaining({
           slug: expect.any(String),
@@ -25,8 +27,10 @@ describe("GET /api/topics", () => {
 
 describe("GET /api/articles/:article_id", () => {
   test("200: returns an article object with all relevant keys", async () => {
-    const { body } = await request(app).get("/api/articles/1").expect(200);
-    expect(body.article).toEqual(
+    const {
+      body: { article },
+    } = await request(app).get("/api/articles/1").expect(200);
+    expect(article).toEqual(
       expect.objectContaining({
         article_id: 1,
         title: "Living in the shadow of a great man",
@@ -40,8 +44,10 @@ describe("GET /api/articles/:article_id", () => {
     );
   });
   test("200: returns an article object when article has no associated comments", async () => {
-    const { body } = await request(app).get("/api/articles/2").expect(200);
-    expect(body.article).toEqual(
+    const {
+      body: { article },
+    } = await request(app).get("/api/articles/2").expect(200);
+    expect(article).toEqual(
       expect.objectContaining({
         article_id: 2,
         title: "Sony Vaio; or, The Laptop",
@@ -55,23 +61,29 @@ describe("GET /api/articles/:article_id", () => {
     );
   });
   test("400: returns bad request message when passed invalid article_id", async () => {
-    const { body } = await request(app).get("/api/articles/beans").expect(400);
-    expect(body.msg).toBe("Invalid article ID");
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles/beans").expect(400);
+    expect(msg).toBe("Invalid article ID");
   });
   test("404: returns not found message when passed valid but non-existent article_id", async () => {
-    const { body } = await request(app).get("/api/articles/100").expect(404);
-    expect(body.msg).toBe("Article not found");
+    const {
+      body: { msg },
+    } = await request(app).get("/api/articles/100").expect(404);
+    expect(msg).toBe("Article not found");
   });
 });
 
 describe("PATCH /api/articles/:article_id", () => {
   test("200: returns article with updated votes", async () => {
     const incrementer = { inc_votes: 2 };
-    const { body } = await request(app)
+    const {
+      body: { article },
+    } = await request(app)
       .patch("/api/articles/1")
       .send(incrementer)
       .expect(200);
-    expect(body.article).toEqual({
+    expect(article).toEqual({
       article_id: 1,
       title: "Living in the shadow of a great man",
       body: "I find this existence challenging",
@@ -250,6 +262,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect.objectContaining({
           comment_id: expect.any(Number),
           votes: expect.any(Number),
+          article_id: 5,
           created_at: expect.any(String),
           author: expect.any(String),
           body: expect.any(String),
