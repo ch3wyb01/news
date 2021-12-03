@@ -16,12 +16,14 @@ exports.selectArticleById = async (article_id) => {
 };
 
 exports.updateArticleById = async (inc_votes, article_id) => {
-  await db.query(
-    `UPDATE articles
-    SET votes = ${inc_votes ? "votes + $2" : "votes"}
-    WHERE article_id = $1;`,
-    inc_votes ? [article_id, inc_votes] : [article_id]
-  );
+  if (inc_votes) {
+    await db.query(
+      `UPDATE articles
+      SET votes = votes + $1
+      WHERE article_id = $2;`,
+      [inc_votes, article_id]
+    );
+  }
 
   const article = await this.selectArticleById(article_id);
 

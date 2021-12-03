@@ -35,14 +35,19 @@ exports.removeCommentById = async (comment_id) => {
 };
 
 exports.updateCommentById = async (inc_votes, comment_id) => {
-  const { rows } = await db.query(
-    `
-  UPDATE comments
-  SET votes = ${inc_votes ? 'votes + $2' : 'votes'}
-  WHERE comment_id = $1
-  RETURNING *`,
-    inc_votes ? [comment_id, inc_votes] : [comment_id]
-  );
+  const { rows } = inc_votes
+    ? await db.query(
+        `UPDATE comments
+      SET votes = votes + $1
+      WHERE comment_id = $2
+      RETURNING *`,
+        [inc_votes, comment_id]
+      )
+    : await db.query(
+        `SELECT * FROM comments
+      WHERE comment_id = $1;`,
+        [comment_id]
+      );
 
   return rows[0];
 };
