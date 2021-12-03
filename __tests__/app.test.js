@@ -151,6 +151,16 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400);
     expect(msg).toBe("Invalid article ID");
   });
+  test('404: returns error message when passed non-existent article ID', async () => {
+    const incrementer = { inc_votes: 1 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .patch("/api/articles/88")
+      .send(incrementer)
+      .expect(404);
+    expect(msg).toBe("Resource not found in articles");
+  });
 });
 
 describe("GET /api/articles", () => {
@@ -417,7 +427,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("GET /api/users/:username", () => {
+describe("GET /api/users/:username", () => {
   test("200: returns user object with username, avatar_url, name properties", async () => {
     const {
       body: { user },

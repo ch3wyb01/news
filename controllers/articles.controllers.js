@@ -44,6 +44,8 @@ exports.patchArticleById = async (req, res, next) => {
       });
     }
 
+    await checkExists("articles", "article_id", article_id);
+
     const article = await updateArticleById(inc_votes, article_id);
 
     res.status(200).send({ article });
