@@ -138,4 +138,23 @@ exports.endpointsDescription = {
       avatar_url: "https://avatar.url",
     },
   },
+  "PATCH /api/comments/:comment_id": {
+    description:
+      "accepts an object in the form {inc_votes : newVotes} where newVotes indicates how much the votes property in the given comment should be updated by and responds with the updated comment",
+    queries: [],
+    exampleRequest: "/api/comments/2",
+    exampleRequestBody: {
+      inc_votes: 2,
+    },
+    exampleResponse: {
+      comment: {
+        comment_id: 2,
+        body: "Text from the comment...",
+        votes: 17,
+        author: "butter_bridge",
+        article_id: 1,
+        created_at: "2020-07-09T20:11:00.000Z",
+      },
+    },
+  },
 };
