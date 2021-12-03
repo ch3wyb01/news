@@ -32,13 +32,6 @@ exports.patchArticleById = async (req, res, next) => {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
     }
 
-    if (!inc_votes) {
-      await Promise.reject({
-        status: 400,
-        msg: "No votes change inputted",
-      });
-    }
-
     await checkExists("articles", "article_id", article_id);
 
     const article = await updateArticleById(inc_votes, article_id);

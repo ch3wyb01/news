@@ -94,15 +94,24 @@ describe("PATCH /api/articles/:article_id", () => {
       comment_count: 11,
     });
   });
-  test("400: returns error message if no inc_votes included in body", async () => {
+  test("200: returns original article if no inc_votes included in body", async () => {
     const incrementer = {};
     const {
-      body: { msg },
+      body: { article },
     } = await request(app)
-      .patch("/api/articles/2")
+      .patch("/api/articles/1")
       .send(incrementer)
-      .expect(400);
-    expect(msg).toBe("No votes change inputted");
+      .expect(200);
+    expect(article).toEqual({
+      article_id: 1,
+      title: "Living in the shadow of a great man",
+      body: "I find this existence challenging",
+      votes: 100,
+      topic: "mitch",
+      author: "butter_bridge",
+      created_at: "2020-07-09T20:11:00.000Z",
+      comment_count: 11,
+    });
   });
   test("400: returns error message if inc_votes is invalid data type", async () => {
     const incrementer = { inc_votes: "bob" };
