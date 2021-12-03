@@ -38,10 +38,10 @@ exports.updateCommentById = async (inc_votes, comment_id) => {
   const { rows } = await db.query(
     `
   UPDATE comments
-  SET votes = votes + $1
-  WHERE comment_id = $2
+  SET votes = ${inc_votes ? 'votes + $2' : 'votes'}
+  WHERE comment_id = $1
   RETURNING *`,
-    [inc_votes, comment_id]
+    inc_votes ? [comment_id, inc_votes] : [comment_id]
   );
 
   return rows[0];

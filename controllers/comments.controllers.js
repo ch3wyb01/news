@@ -75,13 +75,6 @@ exports.patchCommentById = async (req, res, next) => {
       await Promise.reject({ status: 400, msg: "Invalid comment ID" });
     }
 
-    if (!inc_votes) {
-      await Promise.reject({
-        status: 400,
-        msg: "No votes change inputted",
-      });
-    }
-    
     await checkExists("comments", "comment_id", comment_id);
 
     const comment = await updateCommentById(inc_votes, comment_id);
