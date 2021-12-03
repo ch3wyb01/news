@@ -289,6 +289,13 @@ describe("GET /api/articles/:article_id/comments", () => {
       );
     });
   });
+  test("200: returns empty array when passed article that has no associated comments", async () => {
+    const {
+      body: { comments },
+    } = await request(app).get("/api/articles/2/comments").expect(200);
+    expect(Array.isArray(comments)).toBe(true);
+    expect(comments).toHaveLength(0);
+  });
   test("404: returns error message if passed non-existent article_id", async () => {
     const {
       body: { msg },
