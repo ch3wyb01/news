@@ -151,7 +151,7 @@ describe("PATCH /api/articles/:article_id", () => {
       .expect(400);
     expect(msg).toBe("Invalid article ID");
   });
-  test('404: returns error message when passed non-existent article ID', async () => {
+  test("404: returns error message when passed non-existent article ID", async () => {
     const incrementer = { inc_votes: 1 };
     const {
       body: { msg },
@@ -449,5 +449,37 @@ describe("GET /api/users/:username", () => {
       body: { msg },
     } = await request(app).get("/api/users/nonexistent").expect(404);
     expect(msg).toBe("Resource not found in users");
+  });
+});
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("200: returns comment with updated votes", async () => {
+    const incrementer = { inc_votes: 3 };
+    const {
+      body: { comment },
+    } = await request(app)
+      .patch("/api/comments/2")
+      .send(incrementer)
+      .expect(200);
+    expect(comment).toEqual(
+      expect.objectContaining({
+        comment_id: 2,
+        body: expect.any(String),
+        votes: 17,
+        author: "butter_bridge",
+        article_id: 1,
+        created_at: expect.any(String),
+      })
+    );
+  });
+  test("400: returns error message when passed invalid comment ID", async () => {
+    const incrementer = { inc_votes: 2 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .patch("/api/comments/invalid")
+      .send(incrementer)
+      .expect(400);
+    expect(msg).toBe("Invalid comment ID");
   });
 });
