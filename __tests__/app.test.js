@@ -70,7 +70,7 @@ describe("GET /api/articles/:article_id", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/articles/100").expect(404);
-    expect(msg).toBe("Article not found");
+    expect(msg).toBe("Resource not found in articles");
   });
 });
 
@@ -452,7 +452,7 @@ describe("GET /api/users/:username", () => {
   });
 });
 
-describe.only("PATCH /api/comments/:comment_id", () => {
+describe("PATCH /api/comments/:comment_id", () => {
   test("200: returns comment with updated votes", async () => {
     const incrementer = { inc_votes: 3 };
     const {

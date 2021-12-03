@@ -13,14 +13,9 @@ exports.getArticleById = async (req, res, next) => {
       await Promise.reject({ status: 400, msg: "Invalid article ID" });
     }
     
-    const article = await selectArticleById(article_id);
+    await checkExists("articles", "article_id", article_id);
 
-    if (!article) {
-      await Promise.reject({
-        status: 404,
-        msg: "Article not found",
-      });
-    }
+    const article = await selectArticleById(article_id);
 
     res.status(200).send({ article });
   } catch (err) {
