@@ -11,7 +11,7 @@ exports.endpointsDescription = {
     },
   },
   "GET /api/articles": {
-    description: "serves an array of all topics",
+    description: "serves an array of all articles",
     queries: ["topic", "sort_by", "order"],
     exampleResponse: {
       articles: [
