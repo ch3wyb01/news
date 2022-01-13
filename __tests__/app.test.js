@@ -173,11 +173,11 @@ describe("PATCH /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("200: returns array of articles", async () => {
+  test("200: returns array of articles, limited to 10 by default", async () => {
     const {
       body: { articles },
     } = await request(app).get("/api/articles").expect(200);
-    expect(articles).toHaveLength(12);
+    expect(articles).toHaveLength(10);
     articles.forEach((article) => {
       expect(article).toEqual(
         expect.objectContaining({
@@ -239,7 +239,7 @@ describe("GET /api/articles", () => {
     const {
       body: { articles },
     } = await request(app).get("/api/articles?topic=mitch").expect(200);
-    expect(articles).toHaveLength(11);
+    expect(articles).toHaveLength(10);
     articles.forEach((article) => {
       expect(article).toEqual(
         expect.objectContaining({
@@ -268,6 +268,44 @@ describe("GET /api/articles", () => {
     } = await request(app).get("/api/articles?topic=invalid").expect(404);
     expect(msg).toBe("Resource not found in topics");
   });
+  test("200: returns 5 articles when passed a limit query of 5", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles?limit=5").expect(200);
+    expect(articles).toHaveLength(5);
+    articles.forEach((article) => {
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        })
+      );
+    });
+  });
+  test("200: returns second page of results when passed p = 2 query", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/articles?sort_by=article_id&&order=asc&&limit=5&&p=2").expect(200);
+    expect(articles).toHaveLength(5);
+      expect(articles[0]).toEqual(
+        expect.objectContaining({
+          article_id: 6,
+          title: expect.any(String),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        })
+      );
+    });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
@@ -337,7 +375,7 @@ describe("POST /api/articles/:article_id/comments", () => {
     const newComment = {
       username: "lurker",
       body: "Cats are better than dogs",
-      cheese: "edam"
+      cheese: "edam",
     };
     const {
       body: { comment },
@@ -345,16 +383,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       .post("/api/articles/1/comments")
       .send(newComment)
       .expect(201);
-    expect(comment).toEqual(
-      {
-        comment_id: 19,
-        author: "lurker",
-        article_id: 1,
-        votes: 0,
-        created_at: expect.any(String),
-        body: "Cats are better than dogs",
-      }
-    );
+    expect(comment).toEqual({
+      comment_id: 19,
+      author: "lurker",
+      article_id: 1,
+      votes: 0,
+      created_at: expect.any(String),
+      body: "Cats are better than dogs",
+    });
   });
   test("404: returns error message if passed non-existent article ID", async () => {
     const newComment = {
