@@ -33,10 +33,13 @@ exports.updateArticleById = async (inc_votes, article_id) => {
 exports.selectArticles = async (
   sort_by = "created_at",
   order = "desc",
-  topic
+  topic,
+  limit = 10,
+  p = 1
 ) => {
   if (
     ![
+      "article_id",
       "title",
       "body",
       "votes",
@@ -56,11 +59,15 @@ exports.selectArticles = async (
   const queryStr = `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id
-  ${topic ? " WHERE topic = $1" : ""}
+  ${topic ? " WHERE topic = $3" : ""}
   GROUP BY articles.article_id
-  ORDER BY ${sort_by} ${order};`;
+  ORDER BY ${sort_by} ${order}
+  LIMIT $1
+  OFFSET $1 * ($2 - 1);`;
 
-  const { rows } = await db.query(queryStr, topic ? [topic] : []);
+  const queryValues = topic ? [limit, p, topic] : [limit, p];
+  
+  const { rows } = await db.query(queryStr, queryValues);
 
   return rows;
 };
