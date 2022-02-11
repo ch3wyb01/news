@@ -50,9 +50,11 @@ exports.getArticles = async (req, res, next) => {
       await checkExists("topics", "slug", topic);
     }
 
-    const articles = await selectArticles(sort_by, order, topic, limit, p);
+    const articlesInfo = await selectArticles(sort_by, order, topic, limit, p);
 
-    res.status(200).send({ articles });
+    res
+      .status(200)
+      .send({ total: articlesInfo.total, articles: articlesInfo.rows });
   } catch (err) {
     next(err);
   }

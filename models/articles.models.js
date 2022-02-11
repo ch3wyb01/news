@@ -66,8 +66,21 @@ exports.selectArticles = async (
   OFFSET $1 * ($2 - 1);`;
 
   const queryValues = topic ? [limit, p, topic] : [limit, p];
-  
+
   const { rows } = await db.query(queryStr, queryValues);
 
-  return rows;
+  const lengthQueryStr = `SELECT articles.*
+  FROM articles
+  ${topic ? " WHERE topic = $1;" : ";"}`;
+
+  const lengthQueryValues = topic ? [topic] : [];
+
+  const { rows: allArticles } = await db.query(
+    lengthQueryStr,
+    lengthQueryValues
+  );
+
+  const total = allArticles.length;
+
+  return { rows, total };
 };
