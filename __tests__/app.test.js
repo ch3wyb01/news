@@ -193,6 +193,14 @@ describe("GET /api/articles", () => {
       );
     });
   });
+  test("200: should return an object with the correct total property for all articles", async () => {
+    const { body } = await request(app).get("/api/articles").expect(200);
+    expect(body).toEqual(
+      expect.objectContaining({
+        total: 12,
+      })
+    );
+  });
   test("200: returns array sorted by created_at descending by default", async () => {
     const {
       body: { articles },
@@ -255,6 +263,14 @@ describe("GET /api/articles", () => {
       );
     });
   });
+  test("200: should return an object with the correct total property for all articles with the relevant topic", async () => {
+    const { body } = await request(app).get("/api/articles?topic=mitch").expect(200);
+    expect(body).toEqual(
+      expect.objectContaining({
+        total: 11,
+      })
+    );
+  });
   test("200: returns empty array when passed topic query that has no associated articles", async () => {
     const {
       body: { articles },
@@ -291,21 +307,23 @@ describe("GET /api/articles", () => {
   test("200: returns second page of results when passed p = 2 query", async () => {
     const {
       body: { articles },
-    } = await request(app).get("/api/articles?sort_by=article_id&&order=asc&&limit=5&&p=2").expect(200);
+    } = await request(app)
+      .get("/api/articles?sort_by=article_id&&order=asc&&limit=5&&p=2")
+      .expect(200);
     expect(articles).toHaveLength(5);
-      expect(articles[0]).toEqual(
-        expect.objectContaining({
-          article_id: 6,
-          title: expect.any(String),
-          body: expect.any(String),
-          votes: expect.any(Number),
-          topic: expect.any(String),
-          author: expect.any(String),
-          created_at: expect.any(String),
-          comment_count: expect.any(Number),
-        })
-      );
-    });
+    expect(articles[0]).toEqual(
+      expect.objectContaining({
+        article_id: 6,
+        title: expect.any(String),
+        body: expect.any(String),
+        votes: expect.any(Number),
+        topic: expect.any(String),
+        author: expect.any(String),
+        created_at: expect.any(String),
+        comment_count: expect.any(Number),
+      })
+    );
+  });
 });
 
 describe("GET /api/articles/:article_id/comments", () => {
