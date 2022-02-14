@@ -35,7 +35,8 @@ exports.selectArticles = async (
   order = "desc",
   topic,
   limit = 10,
-  p = 1
+  p = 1,
+  author
 ) => {
   if (
     ![
@@ -59,13 +60,28 @@ exports.selectArticles = async (
   const queryStr = `SELECT articles.*, CAST(COUNT(comments.article_id) AS int) AS comment_count
   FROM articles
   LEFT JOIN comments ON articles.article_id = comments.article_id
-  ${topic ? " WHERE topic = $3" : ""}
+  ${
+    topic && author
+      ? " WHERE topic = $3 AND articles.author = $4"
+      : topic
+      ? " WHERE topic = $3"
+      : author
+      ? " WHERE articles.author = $3"
+      : ""
+  }
   GROUP BY articles.article_id
   ORDER BY ${sort_by} ${order}
   LIMIT $1
   OFFSET $1 * ($2 - 1);`;
 
-  const queryValues = topic ? [limit, p, topic] : [limit, p];
+  const queryValues =
+    topic && author
+      ? [limit, p, topic, author]
+      : topic
+      ? [limit, p, topic]
+      : author
+      ? [limit, p, author]
+      : [limit, p];
 
   const { rows } = await db.query(queryStr, queryValues);
 
