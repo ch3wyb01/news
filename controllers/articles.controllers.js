@@ -44,13 +44,13 @@ exports.patchArticleById = async (req, res, next) => {
 
 exports.getArticles = async (req, res, next) => {
   try {
-    const { sort_by, order, topic, limit, p } = req.query;
+    const { sort_by, order, topic, limit, p, author } = req.query;
 
     if (topic) {
       await checkExists("topics", "slug", topic);
     }
 
-    const articlesInfo = await selectArticles(sort_by, order, topic, limit, p);
+    const articlesInfo = await selectArticles(sort_by, order, topic, limit, p, author);
 
     res
       .status(200)
