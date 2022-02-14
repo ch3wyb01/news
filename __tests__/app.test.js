@@ -264,7 +264,9 @@ describe("GET /api/articles", () => {
     });
   });
   test("200: should return an object with the correct total property for all articles with the relevant topic", async () => {
-    const { body } = await request(app).get("/api/articles?topic=mitch").expect(200);
+    const { body } = await request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200);
     expect(body).toEqual(
       expect.objectContaining({
         total: 11,
@@ -303,6 +305,7 @@ describe("GET /api/articles", () => {
         })
       );
     });
+    
   });
   test("200: returns second page of results when passed p = 2 query", async () => {
     const {
@@ -323,6 +326,28 @@ describe("GET /api/articles", () => {
         comment_count: expect.any(Number),
       })
     );
+  });
+  test("200: returns array filtered by author", async () => {
+    const {
+      body: { articles },
+    } = await request(app)
+      .get("/api/articles?author=icellusedkars")
+      .expect(200);
+    expect(articles).toHaveLength(6);
+    articles.forEach((article) => {
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          body: expect.any(String),
+          votes: expect.any(Number),
+          topic: expect.any(String),
+          author: "icellusedkars",
+          created_at: expect.any(String),
+          comment_count: expect.any(Number),
+        })
+      );
+    });
   });
 });
 
