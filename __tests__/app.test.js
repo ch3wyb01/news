@@ -40,6 +40,7 @@ describe("GET /api/articles/:article_id", () => {
         author: "butter_bridge",
         created_at: "2020-07-09T20:11:00.000Z",
         comment_count: 11,
+        voted_by: []
       })
     );
   });
@@ -52,11 +53,29 @@ describe("GET /api/articles/:article_id", () => {
         article_id: 2,
         title: "Sony Vaio; or, The Laptop",
         body: expect.any(String),
-        votes: 0,
+        votes: 2,
         topic: "mitch",
         author: "icellusedkars",
         created_at: expect.any(String),
         comment_count: 0,
+      })
+    );
+  });
+  test("200: returns an article object including users who have voted", async () => {
+    const {
+      body: { article },
+    } = await request(app).get("/api/articles/2").expect(200);
+    expect(article).toEqual(
+      expect.objectContaining({
+        article_id: 2,
+        title: "Sony Vaio; or, The Laptop",
+        body: expect.any(String),
+        votes: 2,
+        topic: "mitch",
+        author: "icellusedkars",
+        created_at: expect.any(String),
+        comment_count: 0,
+        voted_by: ["lurker", "rogersop"],
       })
     );
   });
@@ -83,16 +102,18 @@ describe("PATCH /api/articles/:article_id", () => {
       .patch("/api/articles/1")
       .send(incrementer)
       .expect(200);
-    expect(article).toEqual({
-      article_id: 1,
-      title: "Living in the shadow of a great man",
-      body: "I find this existence challenging",
-      votes: 102,
-      topic: "mitch",
-      author: "butter_bridge",
-      created_at: "2020-07-09T20:11:00.000Z",
-      comment_count: 11,
-    });
+    expect(article).toEqual(
+      expect.objectContaining({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        body: "I find this existence challenging",
+        votes: 102,
+        topic: "mitch",
+        author: "butter_bridge",
+        created_at: "2020-07-09T20:11:00.000Z",
+        comment_count: 11,
+      })
+    );
   });
   test("200: returns original article if no inc_votes included in body", async () => {
     const incrementer = {};
@@ -102,16 +123,19 @@ describe("PATCH /api/articles/:article_id", () => {
       .patch("/api/articles/1")
       .send(incrementer)
       .expect(200);
-    expect(article).toEqual({
-      article_id: 1,
-      title: "Living in the shadow of a great man",
-      body: "I find this existence challenging",
-      votes: 100,
-      topic: "mitch",
-      author: "butter_bridge",
-      created_at: "2020-07-09T20:11:00.000Z",
-      comment_count: 11,
-    });
+    expect(article).toEqual(
+      expect.objectContaining({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        body: "I find this existence challenging",
+        votes: 100,
+        topic: "mitch",
+        author: "butter_bridge",
+        created_at: "2020-07-09T20:11:00.000Z",
+        comment_count: 11,
+        voted_by: [],
+      })
+    );
   });
   test("400: returns error message if inc_votes is invalid data type", async () => {
     const incrementer = { inc_votes: "bob" };
@@ -129,16 +153,18 @@ describe("PATCH /api/articles/:article_id", () => {
       .patch("/api/articles/1")
       .send(incrementer)
       .expect(200);
-    expect(body.article).toEqual({
-      article_id: 1,
-      title: "Living in the shadow of a great man",
-      body: "I find this existence challenging",
-      votes: 98,
-      topic: "mitch",
-      author: "butter_bridge",
-      created_at: "2020-07-09T20:11:00.000Z",
-      comment_count: 11,
-    });
+    expect(body.article).toEqual(
+      expect.objectContaining({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        body: "I find this existence challenging",
+        votes: 98,
+        topic: "mitch",
+        author: "butter_bridge",
+        created_at: "2020-07-09T20:11:00.000Z",
+        comment_count: 11,
+      })
+    );
   });
   test("404: returns path not found message when passed invalid path", async () => {
     const incrementer = { inc_votes: 1 };
@@ -655,6 +681,14 @@ describe("POST /api/users/:username/voted_articles", () => {
         username: "lurker",
       })
     );
+    const {
+      body: { article : originalArticle },
+    } = await request(app).get("/api/articles/3");
+    expect(originalArticle).toEqual(
+      expect.objectContaining({
+        voted_by: expect.arrayContaining(["lurker"]),
+      })
+    );
   });
   test("400: returns error message when passed invalid username", async () => {
     const vote = { article_id: 3 };
@@ -712,6 +746,7 @@ describe("GET /api/users/:username/voted_articles", () => {
         })
       );
     });
+    
   });
   test("400: returns error message when passed invalid username", async () => {
     const {
@@ -729,7 +764,7 @@ describe("GET /api/users/:username/voted_articles", () => {
 
 describe("DELETE /api/users/:username/", () => {
   test("204: deletes article vote and responds with no content", async () => {
-    const body = { article_id: 1 };
+    const body = { article_id: 2 };
     await request(app)
       .delete("/api/users/lurker/voted_articles")
       .send(body)
@@ -740,13 +775,21 @@ describe("DELETE /api/users/:username/", () => {
     articles.forEach((article) => {
       expect(article).toEqual(
         expect.not.objectContaining({
-          article_id: 1,
+          article_id: 2,
         })
       );
     });
+    const {
+      body: { article },
+    } = await request(app).get("/api/articles/2");
+    expect(article).toEqual(
+      expect.objectContaining({
+        voted_by: expect.not.arrayContaining(["lurker"]),
+      })
+    );
   });
   test("400: returns error message when passed invalid username", async () => {
-    const body = { article_id: 1 };
+    const body = { article_id: 2 };
     const {
       body: { msg },
     } = await request(app)
@@ -786,7 +829,7 @@ describe("DELETE /api/users/:username/", () => {
     expect(msg).toBe("article does not exist");
   });
   test("404: returns error message when user has not voted for the article", async () => {
-    const body = { article_id: 2 };
+    const body = { article_id: 1 };
     const {
       body: { msg },
     } = await request(app)
