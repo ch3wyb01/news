@@ -12,6 +12,18 @@ exports.selectArticleById = async (article_id) => {
 
   const article = rows[0];
 
+  const { rows : votedByUsers} = await db.query(
+    `
+  SELECT username
+  FROM article_votes
+  WHERE article_id = $1`,
+    [article_id]
+  );
+
+  const votedByUsernames = votedByUsers.map((user) => user.username);
+
+  article["voted_by"] = votedByUsernames;
+
   return article;
 };
 
