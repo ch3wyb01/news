@@ -713,4 +713,16 @@ describe("GET /api/users/:username/voted_articles", () => {
       );
     });
   });
+  test("400: returns error message when passed invalid username", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/users/55/voted_articles").expect(400);
+    expect(msg).toBe("Invalid username");
+  });
+  test("404: returns error message when passed valid but non-existent username", async () => {
+    const {
+      body: { msg },
+    } = await request(app).get("/api/users/nobody/voted_articles").expect(404);
+    expect(msg).toBe("user does not exist");
+  });
 });
