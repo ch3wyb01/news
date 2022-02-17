@@ -2,6 +2,7 @@ const {
   selectUsers,
   selectUserByUsername,
   insertVotedArticle,
+  selectVotedArticles,
 } = require("../models/users.models");
 const { checkExists } = require("../utils");
 
@@ -42,6 +43,18 @@ exports.postVotedArticle = async (req, res, next) => {
     const article = await insertVotedArticle(article_id, username);
 
     res.status(201).send({ article });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getVotedArticles = async (req, res, next) => {
+  try {
+    const { username } = req.params;
+
+    const articles = await selectVotedArticles(username);
+
+    res.status(200).send({ articles });
   } catch (err) {
     next(err);
   }
