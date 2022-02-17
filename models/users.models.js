@@ -22,7 +22,7 @@ exports.selectUserByUsername = async (username) => {
   return rows[0];
 };
 
-exports.insertVotedArticle = async (article_id, username) => {
+exports.insertArticleVote = async (article_id, username) => {
   const { rows } = await db.query(
     `INSERT INTO article_votes
   (article_id, username)
