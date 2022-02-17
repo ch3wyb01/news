@@ -305,7 +305,6 @@ describe("GET /api/articles", () => {
         })
       );
     });
-    
   });
   test("200: returns second page of results when passed p = 2 query", async () => {
     const {
@@ -638,5 +637,23 @@ describe("PATCH /api/comments/:comment_id", () => {
       .send(incrementer)
       .expect(400);
     expect(msg).toBe("Invalid input");
+  });
+});
+
+describe("POST /api/users/:username/voted_articles", () => {
+  test("201: returns object containing the correct article_id and username", async () => {
+    const vote = { article_id: 3 };
+    const {
+      body: { article },
+    } = await request(app)
+      .post("/api/users/lurker/voted_articles")
+      .send(vote)
+      .expect(201);
+    expect(article).toEqual(
+      expect.objectContaining({
+        article_id: 3,
+        username: "lurker",
+      })
+    );
   });
 });
