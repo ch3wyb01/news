@@ -726,3 +726,73 @@ describe("GET /api/users/:username/voted_articles", () => {
     expect(msg).toBe("user does not exist");
   });
 });
+
+describe("DELETE /api/users/:username/", () => {
+  test("204: deletes article vote and responds with no content", async () => {
+    const body = { article_id: 1 };
+    await request(app)
+      .delete("/api/users/lurker/voted_articles")
+      .send(body)
+      .expect(204);
+    const {
+      body: { articles },
+    } = await request(app).get("/api/users/lurker/voted_articles");
+    articles.forEach((article) => {
+      expect(article).toEqual(
+        expect.not.objectContaining({
+          article_id: 1,
+        })
+      );
+    });
+  });
+  test("400: returns error message when passed invalid username", async () => {
+    const body = { article_id: 1 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .delete("/api/users/5/voted_articles")
+      .send(body)
+      .expect(400);
+    expect(msg).toBe("Invalid username");
+  });
+  test("404: returns error message when passed valid but non-existent username", async () => {
+    const body = { article_id: 1 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .delete("/api/users/nobody/voted_articles")
+      .send(body)
+      .expect(404);
+    expect(msg).toBe("user does not exist");
+  });
+  test("400: returns error message when passed invalid article_id", async () => {
+    const body = { article_id: "invalid" };
+    const {
+      body: { msg },
+    } = await request(app)
+      .delete("/api/users/lurker/voted_articles")
+      .send(body)
+      .expect(400);
+    expect(msg).toBe("Invalid article ID");
+  });
+  test("404: returns error message when passed valid but non-existent article_id", async () => {
+    const body = { article_id: 100 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .delete("/api/users/lurker/voted_articles")
+      .send(body)
+      .expect(404);
+    expect(msg).toBe("article does not exist");
+  });
+  test("404: returns error message when user has not voted for the article", async () => {
+    const body = { article_id: 2 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .delete("/api/users/lurker/voted_articles")
+      .send(body)
+      .expect(404);
+    expect(msg).toBe("user has not voted for this article");
+  });
+});
