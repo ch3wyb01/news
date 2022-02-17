@@ -3,6 +3,7 @@ const {
   selectUserByUsername,
   insertArticleVote,
   selectVotedArticles,
+  removeArticleVote,
 } = require("../models/users.models");
 const { checkExists } = require("../utils");
 
@@ -70,4 +71,24 @@ exports.getVotedArticles = async (req, res, next) => {
   }
 };
 
+exports.deleteArticleVote = async (req, res, next) => {
+  try {
+    const { username } = req.params;
 
+    const { article_id } = req.body;
+
+    !isNaN(username)
+      ? await Promise.reject({ status: 400, msg: "Invalid username" })
+      : await checkExists("users", "username", username);
+
+    isNaN(article_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid article ID" })
+      : await checkExists("articles", "article_id", article_id);
+
+    await removeArticleVote(article_id, username);
+
+    res.sendStatus(204);
+  } catch (err) {
+    next(err);
+  }
+};
