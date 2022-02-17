@@ -12,12 +12,24 @@ exports.selectUsers = async () => {
 };
 
 exports.selectUserByUsername = async (username) => {
-
   const { rows } = await db.query(
     `
     SELECT * FROM users
     WHERE username = $1;`,
     [username]
+  );
+
+  return rows[0];
+};
+
+exports.insertVotedArticle = async (article_id, username) => {
+  const { rows } = await db.query(
+    `INSERT INTO article_votes
+  (article_id, username)
+  VALUES
+  ($1, $2)
+  RETURNING *;`,
+    [article_id, username]
   );
 
   return rows[0];
