@@ -37,12 +37,16 @@ exports.getUserByUsername = async (req, res, next) => {
 exports.postVotedArticle = async (req, res, next) => {
   try {
     const { username } = req.params;
-    
+
     const { article_id } = req.body;
 
-    !isNaN(username) ? await Promise.reject({ status: 400, msg: "Invalid username" }) : await checkExists("users", "username", username);
+    !isNaN(username)
+      ? await Promise.reject({ status: 400, msg: "Invalid username" })
+      : await checkExists("users", "username", username);
 
-    isNaN(article_id) ? await Promise.reject({ status: 400, msg: "Invalid article ID" }) : await checkExists("articles", "article_id", article_id);
+    isNaN(article_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid article ID" })
+      : await checkExists("articles", "article_id", article_id);
 
     const article = await insertVotedArticle(article_id, username);
 
@@ -55,6 +59,10 @@ exports.postVotedArticle = async (req, res, next) => {
 exports.getVotedArticles = async (req, res, next) => {
   try {
     const { username } = req.params;
+
+    !isNaN(username)
+      ? await Promise.reject({ status: 400, msg: "Invalid username" })
+      : await checkExists("users", "username", username);
 
     const articles = await selectVotedArticles(username);
 
