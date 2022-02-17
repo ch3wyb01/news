@@ -1,7 +1,7 @@
 const {
   selectUsers,
   selectUserByUsername,
-  insertVotedArticle,
+  insertArticleVote,
   selectVotedArticles,
 } = require("../models/users.models");
 const { checkExists } = require("../utils");
@@ -32,7 +32,7 @@ exports.getUserByUsername = async (req, res, next) => {
   }
 };
 
-exports.postVotedArticle = async (req, res, next) => {
+exports.postArticleVote = async (req, res, next) => {
   try {
     const { username } = req.params;
 
@@ -46,7 +46,7 @@ exports.postVotedArticle = async (req, res, next) => {
       ? await Promise.reject({ status: 400, msg: "Invalid article ID" })
       : await checkExists("articles", "article_id", article_id);
 
-    const article = await insertVotedArticle(article_id, username);
+    const article = await insertArticleVote(article_id, username);
 
     res.status(201).send({ article });
   } catch (err) {
@@ -69,3 +69,5 @@ exports.getVotedArticles = async (req, res, next) => {
     next(err);
   }
 };
+
+
