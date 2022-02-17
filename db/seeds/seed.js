@@ -1,18 +1,24 @@
 const db = require("../connection");
 const format = require("pg-format");
 const seed = async ({ articleData, commentData, topicData, userData }) => {
-  //DROP tables in reverse - comments, articles, users, topics
-  await db.query(`DROP TABLE IF EXISTS comments;`);
+  // 1. drop tables in reverse - article_votes, comments, articles, users, topics
+  await Promise.all([
+    db.query(`DROP TABLE IF EXISTS article_votes;`),
+    db.query(`DROP TABLE IF EXISTS comments;`),
+  ]);
+
   await db.query(`DROP TABLE IF EXISTS articles;`);
+
   await Promise.all([
     db.query(`DROP TABLE IF EXISTS users;`),
     db.query(`DROP TABLE IF EXISTS topics;`),
   ]);
-  // 1. create tables - topics, users, articles, comments
+  // 2. create tables - topics, users, articles, comments, article_votes
   const createTopicsStr = `CREATE TABLE topics(
     slug VARCHAR(50) PRIMARY KEY,
     description VARCHAR(200) NOT NULL
     );`;
+    
   const createUsersStr = `CREATE TABLE users(
     username VARCHAR(50) PRIMARY KEY,
     avatar_url TEXT,
@@ -31,14 +37,25 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`);
 
-  await db.query(`CREATE TABLE comments(
+  const createCommentsStr = `CREATE TABLE comments(
     comment_id SERIAL PRIMARY KEY,
     author VARCHAR(50) REFERENCES users(username) NOT NULL,
     article_id INT REFERENCES articles(article_id) NOT NULL,
     votes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     body TEXT NOT NULL
-  );`);
+  );`;
+
+  const createArticleVotesStr = `CREATE TABLE article_votes(
+    article_votes_id SERIAL PRIMARY KEY,
+    article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
+    username VARCHAR(50) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
+  );`;
+
+  await Promise.all([
+    db.query(createCommentsStr),
+    db.query(createArticleVotesStr),
+  ]);
 
   // 2. insert data
   const formattedTopicData = topicData.map((topic) => {
