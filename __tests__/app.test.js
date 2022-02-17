@@ -657,3 +657,20 @@ describe("POST /api/users/:username/voted_articles", () => {
     );
   });
 });
+
+describe("GET /api/users/:username/voted_articles", () => {
+  test("200: returns array of article objects voted by the user", async () => {
+    const {
+      body: { articles },
+    } = await request(app).get("/api/users/lurker/voted_articles").expect(200);
+    expect(articles).toHaveLength(2);
+    articles.forEach((article) => {
+      expect(article).toEqual(
+        expect.objectContaining({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+        })
+      );
+    });
+  });
+});
