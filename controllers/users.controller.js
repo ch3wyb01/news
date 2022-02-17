@@ -20,11 +20,9 @@ exports.getUserByUsername = async (req, res, next) => {
   try {
     const { username } = req.params;
 
-    if (!isNaN(username)) {
-      await Promise.reject({ status: 400, msg: "Invalid username" });
-    }
-
-    await checkExists("users", "username", username);
+    !isNaN(username)
+      ? await Promise.reject({ status: 400, msg: "Invalid username" })
+      : await checkExists("users", "username", username);
 
     const user = await selectUserByUsername(username);
 

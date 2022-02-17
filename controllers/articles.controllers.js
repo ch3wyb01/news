@@ -9,11 +9,9 @@ exports.getArticleById = async (req, res, next) => {
   try {
     const { article_id } = req.params;
 
-    if (isNaN(article_id)) {
-      await Promise.reject({ status: 400, msg: "Invalid article ID" });
-    }
-
-    await checkExists("articles", "article_id", article_id);
+    isNaN(article_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid article ID" })
+      : await checkExists("articles", "article_id", article_id);
 
     const article = await selectArticleById(article_id);
 
@@ -28,11 +26,9 @@ exports.patchArticleById = async (req, res, next) => {
     const { article_id } = req.params;
     const { inc_votes } = req.body;
 
-    if (isNaN(article_id)) {
-      await Promise.reject({ status: 400, msg: "Invalid article ID" });
-    }
-
-    await checkExists("articles", "article_id", article_id);
+    isNaN(article_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid article ID" })
+      : await checkExists("articles", "article_id", article_id);
 
     const article = await updateArticleById(inc_votes, article_id);
 
@@ -50,7 +46,14 @@ exports.getArticles = async (req, res, next) => {
       await checkExists("topics", "slug", topic);
     }
 
-    const articlesInfo = await selectArticles(sort_by, order, topic, limit, p, author);
+    const articlesInfo = await selectArticles(
+      sort_by,
+      order,
+      topic,
+      limit,
+      p,
+      author
+    );
 
     res
       .status(200)

@@ -10,10 +10,9 @@ exports.getCommentsByArticleId = async (req, res, next) => {
   try {
     const { article_id } = req.params;
 
-    if (isNaN(article_id)) {
-      await Promise.reject({ status: 400, msg: "Invalid article ID" });
-    }
-    await checkExists("articles", "article_id", article_id);
+    isNaN(article_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid article ID" })
+      : await checkExists("articles", "article_id", article_id);
 
     const comments = await selectCommentsByArticleId(article_id);
 
@@ -53,13 +52,12 @@ exports.deleteCommentById = async (req, res, next) => {
   try {
     const { comment_id } = req.params;
 
-    if (isNaN(comment_id)) {
-      await Promise.reject({ status: 400, msg: "Invalid comment ID" });
-    }
-
-    await checkExists("comments", "comment_id", comment_id);
+    isNaN(comment_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid comment ID" })
+      : await checkExists("comments", "comment_id", comment_id);
 
     await removeCommentById(comment_id);
+
     res.sendStatus(204);
   } catch (err) {
     next(err);
@@ -71,11 +69,9 @@ exports.patchCommentById = async (req, res, next) => {
     const { comment_id } = req.params;
     const { inc_votes } = req.body;
 
-    if (isNaN(comment_id)) {
-      await Promise.reject({ status: 400, msg: "Invalid comment ID" });
-    }
-
-    await checkExists("comments", "comment_id", comment_id);
+    isNaN(comment_id)
+      ? await Promise.reject({ status: 400, msg: "Invalid comment ID" })
+      : await checkExists("comments", "comment_id", comment_id);
 
     const comment = await updateCommentById(inc_votes, comment_id);
 
