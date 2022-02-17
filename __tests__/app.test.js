@@ -656,6 +656,46 @@ describe("POST /api/users/:username/voted_articles", () => {
       })
     );
   });
+  test("400: returns error message when passed invalid username", async () => {
+    const vote = { article_id: 3 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/users/5/voted_articles")
+      .send(vote)
+      .expect(400);
+    expect(msg).toBe("Invalid username");
+  });
+  test("404: returns error message when passed valid but non-existent username", async () => {
+    const vote = { article_id: 3 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/users/nobody/voted_articles")
+      .send(vote)
+      .expect(404);
+    expect(msg).toBe("Resource not found in users");
+  });
+  test("400: returns error message when passed invalid article_id", async () => {
+    const vote = { article_id: "invalid" };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/users/lurker/voted_articles")
+      .send(vote)
+      .expect(400);
+    expect(msg).toBe("Invalid article ID");
+  });
+  test("404: returns error message when passed valid but non-existent article_id", async () => {
+    const vote = { article_id: 300 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/users/lurker/voted_articles")
+      .send(vote)
+      .expect(404);
+    expect(msg).toBe("Resource not found in articles");
+  });
 });
 
 describe("GET /api/users/:username/voted_articles", () => {
