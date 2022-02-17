@@ -8,10 +8,9 @@ const seed = async ({
   articleVotesData,
 }) => {
   // 1. drop tables in reverse - article_votes, comments, articles, users, topics
-  await Promise.all([
-    db.query(`DROP TABLE IF EXISTS article_votes;`),
-    db.query(`DROP TABLE IF EXISTS comments;`),
-  ]);
+  await db.query(`DROP TABLE IF EXISTS article_votes;`);
+
+  await db.query(`DROP TABLE IF EXISTS comments;`);
 
   await db.query(`DROP TABLE IF EXISTS articles;`);
 
@@ -43,25 +42,20 @@ const seed = async ({
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );`);
 
-  const createCommentsStr = `CREATE TABLE comments(
+  await db.query(`CREATE TABLE comments(
     comment_id SERIAL PRIMARY KEY,
     author VARCHAR(50) REFERENCES users(username) NOT NULL,
     article_id INT REFERENCES articles(article_id) NOT NULL,
     votes INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     body TEXT NOT NULL
-  );`;
+  );`);
 
-  const createArticleVotesStr = `CREATE TABLE article_votes(
+  await db.query(`CREATE TABLE article_votes(
     article_votes_id SERIAL PRIMARY KEY,
     article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
     username VARCHAR(50) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL
-  );`;
-
-  await Promise.all([
-    db.query(createCommentsStr),
-    db.query(createArticleVotesStr),
-  ]);
+  );`);
 
   // 2. insert data
   const formattedTopicData = topicData.map((topic) => {
