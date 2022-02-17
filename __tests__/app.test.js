@@ -70,7 +70,7 @@ describe("GET /api/articles/:article_id", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/articles/100").expect(404);
-    expect(msg).toBe("Resource not found in articles");
+    expect(msg).toBe("article does not exist");
   });
 });
 
@@ -168,7 +168,7 @@ describe("PATCH /api/articles/:article_id", () => {
       .patch("/api/articles/88")
       .send(incrementer)
       .expect(404);
-    expect(msg).toBe("Resource not found in articles");
+    expect(msg).toBe("article does not exist");
   });
 });
 
@@ -284,7 +284,7 @@ describe("GET /api/articles", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/articles?topic=invalid").expect(404);
-    expect(msg).toBe("Resource not found in topics");
+    expect(msg).toBe("topic does not exist");
   });
   test("200: returns 5 articles when passed a limit query of 5", async () => {
     const {
@@ -380,7 +380,7 @@ describe("GET /api/articles/:article_id/comments", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/articles/100/comments").expect(404);
-    expect(msg).toBe("Resource not found in articles");
+    expect(msg).toBe("article does not exist");
   });
   test("400: returns error message if passed invalid article_id", async () => {
     const {
@@ -445,7 +445,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .post("/api/articles/60/comments")
       .send(newComment)
       .expect(404);
-    expect(msg).toBe("Resource not found in articles");
+    expect(msg).toBe("article does not exist");
   });
   test("404: returns error message if passed non-existent username", async () => {
     const newComment = {
@@ -458,7 +458,7 @@ describe("POST /api/articles/:article_id/comments", () => {
       .post("/api/articles/1/comments")
       .send(newComment)
       .expect(404);
-    expect(msg).toBe("Resource not found in users");
+    expect(msg).toBe("user does not exist");
   });
   test("400: returns error message if passed invalid article ID", async () => {
     const newComment = {
@@ -509,7 +509,7 @@ describe("DELETE /api/comments/:comment_id", () => {
     const {
       body: { msg },
     } = await request(app).delete("/api/comments/44").expect(404);
-    expect(msg).toBe("Resource not found in comments");
+    expect(msg).toBe("comment does not exist");
   });
   test("400: returns error message when passed invalid comment ID", async () => {
     const {
@@ -565,7 +565,7 @@ describe("GET /api/users/:username", () => {
     const {
       body: { msg },
     } = await request(app).get("/api/users/nonexistent").expect(404);
-    expect(msg).toBe("Resource not found in users");
+    expect(msg).toBe("user does not exist");
   });
 });
 
@@ -607,7 +607,7 @@ describe("PATCH /api/comments/:comment_id", () => {
       .patch("/api/comments/68")
       .send(incrementer)
       .expect(404);
-    expect(msg).toBe("Resource not found in comments");
+    expect(msg).toBe("comment does not exist");
   });
   test("200: returns original comment when passed object with no inc_votes property", async () => {
     const incrementer = {};
@@ -674,7 +674,7 @@ describe("POST /api/users/:username/voted_articles", () => {
       .post("/api/users/nobody/voted_articles")
       .send(vote)
       .expect(404);
-    expect(msg).toBe("Resource not found in users");
+    expect(msg).toBe("user does not exist");
   });
   test("400: returns error message when passed invalid article_id", async () => {
     const vote = { article_id: "invalid" };
@@ -694,7 +694,7 @@ describe("POST /api/users/:username/voted_articles", () => {
       .post("/api/users/lurker/voted_articles")
       .send(vote)
       .expect(404);
-    expect(msg).toBe("Resource not found in articles");
+    expect(msg).toBe("article does not exist");
   });
 });
 
