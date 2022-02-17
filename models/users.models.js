@@ -46,3 +46,20 @@ exports.selectVotedArticles = async (username) => {
 
   return rows;
 };
+
+exports.removeArticleVote = async (article_id, username) => {
+  const { rows } = await db.query(
+    `DELETE FROM article_votes
+  WHERE article_id = $1
+  AND username = $2
+  RETURNING *;`,
+    [article_id, username]
+  );
+
+  if (!rows.length) {
+    await Promise.reject({
+      status: 404,
+      msg: "user has not voted for this article",
+    });
+  }
+};
