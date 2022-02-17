@@ -1,6 +1,12 @@
 const db = require("../connection");
 const format = require("pg-format");
-const seed = async ({ articleData, commentData, topicData, userData }) => {
+const seed = async ({
+  articleData,
+  commentData,
+  topicData,
+  userData,
+  articleVotesData,
+}) => {
   // 1. drop tables in reverse - article_votes, comments, articles, users, topics
   await Promise.all([
     db.query(`DROP TABLE IF EXISTS article_votes;`),
@@ -18,7 +24,7 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
     slug VARCHAR(50) PRIMARY KEY,
     description VARCHAR(200) NOT NULL
     );`;
-    
+
   const createUsersStr = `CREATE TABLE users(
     username VARCHAR(50) PRIMARY KEY,
     avatar_url TEXT,
@@ -120,6 +126,20 @@ const seed = async ({ articleData, commentData, topicData, userData }) => {
   );
 
   await db.query(insertCommentData);
+
+  const formattedArticleVotesData = articleVotesData.map((vote) => {
+    return [vote.article_id, vote.username];
+  });
+
+  const insertArticleVotesData = format(
+    `INSERT INTO article_votes
+      (article_id, username)
+    VALUES
+      %L;`,
+    formattedArticleVotesData
+  );
+
+  await db.query(insertArticleVotesData);
 };
 
 module.exports = seed;
