@@ -13,7 +13,7 @@ exports.checkExists = async (table, column, value) => {
   );
   const { rows } = await db.query(queryStr, [value]);
 
-  if (rows.length === 0) {
+  if (!rows.length) {
     return Promise.reject({ status: 404, msg: `${resource} does not exist` });
   }
 };
