@@ -9,7 +9,7 @@ module.exports = [
   },
   {
     article_id: 1,
-    username: "weegeebump"
+    username: "weegembump"
   },
   {
     article_id: 16,
@@ -33,7 +33,7 @@ module.exports = [
   },
   {
     article_id: 6,
-    username: "weegeebump",
+    username: "weegembump",
   },
   {
     article_id: 8,
