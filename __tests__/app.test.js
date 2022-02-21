@@ -802,11 +802,12 @@ describe("DELETE /api/users/:username/", () => {
     } = await request(app).get("/api/articles/2");
     expect(article).toEqual(
       expect.objectContaining({
+        votes: 1,
         voted_by: expect.not.arrayContaining(["lurker"]),
       })
     );
   });
-  test("400: returns error message when passed invalid username", async () => {
+  test("400: returns error message when passed invalid username and doesn't decrease article vote count", async () => {
     const body = { article_id: 2 };
     const {
       body: { msg },
@@ -815,6 +816,14 @@ describe("DELETE /api/users/:username/", () => {
       .send(body)
       .expect(400);
     expect(msg).toBe("Invalid username");
+    const {
+      body: { article },
+    } = await request(app).get("/api/articles/2");
+    expect(article).toEqual(
+      expect.objectContaining({
+        votes: 2,
+      })
+    );
   });
   test("404: returns error message when passed valid but non-existent username", async () => {
     const body = { article_id: 1 };
@@ -855,5 +864,13 @@ describe("DELETE /api/users/:username/", () => {
       .send(body)
       .expect(404);
     expect(msg).toBe("user has not voted for this article");
+    const {
+      body: { article },
+    } = await request(app).get("/api/articles/1");
+    expect(article).toEqual(
+      expect.objectContaining({
+        votes: 100,
+      })
+    );
   });
 });
