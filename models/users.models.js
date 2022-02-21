@@ -65,4 +65,6 @@ exports.removeArticleVote = async (article_id, username) => {
       msg: "user has not voted for this article",
     });
   }
+
+  await updateArticleById(-1, article_id);
 };
