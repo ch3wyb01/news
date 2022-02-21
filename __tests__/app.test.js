@@ -40,7 +40,7 @@ describe("GET /api/articles/:article_id", () => {
         author: "butter_bridge",
         created_at: "2020-07-09T20:11:00.000Z",
         comment_count: 11,
-        voted_by: []
+        voted_by: [],
       })
     );
   });
@@ -667,7 +667,7 @@ describe("PATCH /api/comments/:comment_id", () => {
 });
 
 describe("POST /api/users/:username/voted_articles", () => {
-  test("201: returns object containing the correct article_id and username", async () => {
+  test("201: returns object containing the correct article_id & username and increases article's vote count by 1", async () => {
     const vote = { article_id: 3 };
     const {
       body: { article },
@@ -682,10 +682,11 @@ describe("POST /api/users/:username/voted_articles", () => {
       })
     );
     const {
-      body: { article : originalArticle },
+      body: { article: originalArticle },
     } = await request(app).get("/api/articles/3");
     expect(originalArticle).toEqual(
       expect.objectContaining({
+        votes: 1,
         voted_by: expect.arrayContaining(["lurker"]),
       })
     );
@@ -699,6 +700,24 @@ describe("POST /api/users/:username/voted_articles", () => {
       .send(vote)
       .expect(400);
     expect(msg).toBe("Invalid username");
+  });
+  test("400: article vote doesn't increase when passed invalid username", async () => {
+    const vote = { article_id: 3 };
+    const {
+      body: { msg },
+    } = await request(app)
+      .post("/api/users/55/voted_articles")
+      .send(vote)
+      .expect(400);
+    expect(msg).toBe("Invalid username");
+    const {
+      body: { article: originalArticle },
+    } = await request(app).get("/api/articles/3");
+    expect(originalArticle).toEqual(
+      expect.objectContaining({
+        votes: 0,
+      })
+    );
   });
   test("404: returns error message when passed valid but non-existent username", async () => {
     const vote = { article_id: 3 };
@@ -746,7 +765,6 @@ describe("GET /api/users/:username/voted_articles", () => {
         })
       );
     });
-    
   });
   test("400: returns error message when passed invalid username", async () => {
     const {
