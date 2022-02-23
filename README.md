@@ -2,7 +2,10 @@
 
 ## Project Summary
 - An API to retrieve, post, update and delete news-related data such as articles and comments from a PSQL database using node-postgres.
-- link to hosted version : https://becca-news.herokuapp.com/api
+
+Hosted version : https://becca-news.herokuapp.com/api
+
+Frontend repo: https://github.com/ch3wyb01/becca-news 
 
 ## Instructions
 
