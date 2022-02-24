@@ -39,7 +39,7 @@ const seed = async ({
     votes INT,
     topic VARCHAR(50) NOT NULL,
     author VARCHAR(50) REFERENCES users(username) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
   );`);
 
   await db.query(`CREATE TABLE comments(
@@ -47,7 +47,7 @@ const seed = async ({
     author VARCHAR(50) REFERENCES users(username) ON UPDATE CASCADE ON DELETE CASCADE NOT NULL,
     article_id INT REFERENCES articles(article_id) ON DELETE CASCADE NOT NULL,
     votes INT DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     body TEXT NOT NULL
   );`);
 
