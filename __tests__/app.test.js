@@ -38,7 +38,7 @@ describe("GET /api/articles/:article_id", () => {
         votes: 100,
         topic: "mitch",
         author: "butter_bridge",
-        created_at: "2020-07-09T20:11:00.000Z",
+        created_at: "2020-07-09T21:11:00.000Z",
         comment_count: 11,
         voted_by: [],
       })
@@ -110,7 +110,7 @@ describe("PATCH /api/articles/:article_id", () => {
         votes: 102,
         topic: "mitch",
         author: "butter_bridge",
-        created_at: "2020-07-09T20:11:00.000Z",
+        created_at: "2020-07-09T21:11:00.000Z",
         comment_count: 11,
       })
     );
@@ -131,7 +131,7 @@ describe("PATCH /api/articles/:article_id", () => {
         votes: 100,
         topic: "mitch",
         author: "butter_bridge",
-        created_at: "2020-07-09T20:11:00.000Z",
+        created_at: "2020-07-09T21:11:00.000Z",
         comment_count: 11,
         voted_by: [],
       })
@@ -161,7 +161,7 @@ describe("PATCH /api/articles/:article_id", () => {
         votes: 98,
         topic: "mitch",
         author: "butter_bridge",
-        created_at: "2020-07-09T20:11:00.000Z",
+        created_at: "2020-07-09T21:11:00.000Z",
         comment_count: 11,
       })
     );
